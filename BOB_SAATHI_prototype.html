@@ -1,0 +1,1869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px system-ui,-apple-system,sans-serif;background:#faf8f5}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<title>BOB SAATHI Adaptive Banking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  /* app brand palette (constant — this is the product's identity) */
+  --ink:#171226;
+  --ink-2:#4A4362;
+  --ink-3:#736B8A;
+  --paper:#F6F3EF;
+  --card:#FFFFFF;
+  --line:#E6DFD6;
+  --brand:#E35A22;
+  --brand-deep:#AE3D11;
+  --brand-soft:#FDEBE1;
+  --human:#6B4BD6;
+  --human-soft:#EEE9FD;
+  --good:#0E7A5F;
+  --good-soft:#E1F3ED;
+  --warn:#8F5E00;
+  --warn-soft:#FBF0DC;
+  --crit:#B5342A;
+  --crit-soft:#FBE7E4;
+
+  /* studio chrome — theme aware */
+  --bg:#EDE7DF;
+  --bg-2:#E3DBD1;
+  --panel:#FFFFFF;
+  --panel-2:#F7F4F0;
+  --t-1:#171226;
+  --t-2:#5B5372;
+  --t-3:#847C9B;
+  --edge:#D9D0C4;
+  --shadow:0 1px 2px rgba(23,18,38,.05), 0 12px 30px -12px rgba(23,18,38,.18);
+  --shadow-lift:0 2px 4px rgba(23,18,38,.06), 0 30px 60px -20px rgba(23,18,38,.35);
+
+  --radius:14px;
+  --fs:1;          /* profile-driven text scale inside device */
+  --tap:48px;      /* profile-driven minimum touch target */
+  --gap:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131019;
+    --bg-2:#0D0B12;
+    --panel:#1D1926;
+    --panel-2:#252034;
+    --t-1:#F3EFF7;
+    --t-2:#B3AAC6;
+    --t-3:#8A819E;
+    --edge:#332C44;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.6);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.5), 0 30px 60px -20px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131019;
+  --bg-2:#0D0B12;
+  --panel:#1D1926;
+  --panel-2:#252034;
+  --t-1:#F3EFF7;
+  --t-2:#B3AAC6;
+  --t-3:#8A819E;
+  --edge:#332C44;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px -12px rgba(0,0,0,.6);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.5), 0 30px 60px -20px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--t-1);
+  font-family:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;margin:0;text-wrap:balance;letter-spacing:-.01em;}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px;}
+.num{font-variant-numeric:tabular-nums;}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+/* ============================================================
+   STUDIO SHELL
+   ============================================================ */
+.wrap{max-width:1500px;margin:0 auto;padding:0 16px 56px;}
+.masthead{
+  display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;
+  padding-block:22px 16px;border-bottom:1px solid var(--edge);margin-bottom:20px;
+}
+.mast-id{display:flex;align-items:center;gap:12px;}
+.mark{
+  width:40px;height:40px;border-radius:11px;flex:none;
+  background:linear-gradient(145deg,var(--brand),var(--brand-deep));
+  color:#fff;display:grid;place-items:center;font-family:"Bricolage Grotesque",sans-serif;
+  font-weight:800;font-size:19px;letter-spacing:-.02em;
+}
+.mast-id h1{font-size:22px;font-weight:700;line-height:1.15;}
+.mast-id p{margin:2px 0 0;color:var(--t-3);font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;}
+.disclaimer{
+  font-size:12px;color:var(--t-2);background:var(--panel);border:1px solid var(--edge);
+  border-radius:999px;padding:7px 14px;max-width:460px;
+}
+.disclaimer b{color:var(--t-1);}
+
+.stage{display:grid;grid-template-columns:300px minmax(0,1fr) 320px;gap:22px;align-items:start;}
+@media (max-width:1180px){ .stage{grid-template-columns:280px minmax(0,1fr);} .agent-col{grid-column:1/-1;} }
+@media (max-width:820px){ .stage{grid-template-columns:minmax(0,1fr);} }
+
+.panel{background:var(--panel);border:1px solid var(--edge);border-radius:var(--radius);box-shadow:var(--shadow);}
+.panel + .panel{margin-top:16px;}
+.panel-hd{padding:14px 16px 10px;border-bottom:1px solid var(--edge);}
+.panel-hd h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--t-3);font-weight:700;font-family:"Atkinson Hyperlegible",sans-serif;}
+.panel-bd{padding:14px 16px;}
+
+/* profile switcher */
+.prof-list{display:flex;flex-direction:column;gap:6px;}
+.prof{
+  display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;
+  padding:10px 11px;border-radius:10px;border:1.5px solid transparent;background:var(--panel-2);
+  transition:border-color .12s, background .12s, transform .12s;
+}
+.prof:hover{border-color:var(--edge);}
+.prof[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);}
+:root[data-theme="dark"] .prof[aria-pressed="true"],
+:root:not([data-theme="light"]) .prof[aria-pressed="true"]{background:color-mix(in srgb, var(--brand) 18%, var(--panel));}
+.prof .pe{font-size:17px;line-height:1.2;flex:none;width:22px;text-align:center;}
+.prof strong{display:block;font-size:13.5px;font-weight:700;}
+.prof span{display:block;font-size:11.5px;color:var(--t-3);line-height:1.35;}
+.prof[aria-pressed="true"] strong{color:var(--brand-deep);}
+:root[data-theme="dark"] .prof[aria-pressed="true"] strong{color:#FF9366;}
+
+/* adaptation log */
+.log{display:flex;flex-direction:column;gap:0;font-size:12.5px;}
+.log-row{display:flex;gap:9px;padding:7px 0;border-bottom:1px dashed var(--edge);align-items:baseline;}
+.log-row:last-child{border-bottom:0;}
+.log-k{color:var(--t-3);flex:none;width:96px;}
+.log-v{color:var(--t-1);}
+.log-v .was{color:var(--t-3);text-decoration:line-through;text-decoration-thickness:1px;}
+.log-v .arw{color:var(--brand);padding:0 3px;}
+.log-empty{color:var(--t-3);font-size:12.5px;font-style:italic;}
+
+/* demo scenarios */
+.demos{display:flex;flex-direction:column;gap:7px;}
+.demo{
+  display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;text-align:left;width:100%;
+  padding:9px 10px;border-radius:9px;background:var(--panel-2);border:1px solid transparent;
+}
+.demo:hover{border-color:var(--brand);}
+.demo b{font-size:12px;color:var(--brand-deep);font-variant-numeric:tabular-nums;}
+:root[data-theme="dark"] .demo b{color:#FF9366;}
+.demo span{font-size:12.2px;color:var(--t-2);line-height:1.4;}
+.demo span em{font-style:normal;color:var(--t-1);font-weight:700;}
+
+/* ============================================================
+   DEVICE
+   ============================================================ */
+.device-col{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.device{
+  width:390px;max-width:100%;height:812px;
+  background:var(--paper);color:var(--ink);
+  border-radius:38px;border:11px solid #12101A;
+  box-shadow:var(--shadow-lift);
+  overflow:hidden;position:relative;display:flex;flex-direction:column;
+  font-size:calc(15px * var(--fs));
+}
+@media (max-width:460px){
+  .device{height:700px;border-width:8px;border-radius:30px;}
+}
+.device *{font-family:inherit;}
+.device[data-contrast="high"]{
+  --paper:#000000; --card:#0B0B0B; --ink:#FFFFFF; --ink-2:#E8E8E8; --ink-3:#C9C9C9;
+  --line:#5A5A5A; --brand:#FFD400; --brand-deep:#FFD400; --brand-soft:#241F00;
+  --human:#7FD9FF; --human-soft:#00222E; --good:#5BE39B; --good-soft:#052319;
+  --warn:#FFC24D; --warn-soft:#2A1F00; --crit:#FF7A6B; --crit-soft:#2C0D09;
+}
+.device[data-face="hyper"] h1,.device[data-face="hyper"] h2,
+.device[data-face="hyper"] h3,.device[data-face="hyper"] h4{font-family:"Atkinson Hyperlegible",sans-serif;letter-spacing:0;}
+
+.statusbar{
+  flex:none;display:flex;justify-content:space-between;align-items:center;
+  padding:9px 20px 3px;font-size:11.5px;color:var(--ink-2);font-weight:700;
+}
+.appbar{
+  flex:none;display:flex;align-items:center;gap:10px;padding:8px 16px 12px;
+  border-bottom:1px solid var(--line);background:var(--card);
+}
+.appbar .back{
+  min-width:var(--tap);min-height:calc(var(--tap) * .72);margin-left:-10px;
+  display:grid;place-items:center;border-radius:10px;font-size:1.05em;color:var(--ink);
+}
+.appbar .back:hover{background:var(--paper);}
+.appbar h2{font-size:1.02em;font-weight:700;flex:1;min-width:0;}
+.appbar .eyebrow{display:block;font-size:.7em;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:700;font-family:"Atkinson Hyperlegible",sans-serif;}
+.mode-chip{
+  flex:none;font-size:.66em;font-weight:700;padding:5px 9px;border-radius:999px;
+  background:var(--brand-soft);color:var(--brand-deep);border:1px solid color-mix(in srgb,var(--brand) 35%, transparent);
+  white-space:nowrap;
+}
+
+.screen{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px 16px 18px;display:flex;flex-direction:column;gap:14px;}
+.device[data-density="spacious"] .screen{gap:18px;padding:18px 16px 20px;}
+
+/* device typography */
+.screen h3{font-size:1.32em;font-weight:700;line-height:1.2;}
+.screen h4{font-size:1.02em;font-weight:700;}
+.lede{color:var(--ink-2);font-size:.95em;margin:0;}
+.meta{color:var(--ink-3);font-size:.8em;margin:0;}
+.eyebrow-s{font-size:.72em;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:var(--ink-3);}
+
+/* cards, rows, buttons */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.rows{display:flex;flex-direction:column;gap:10px;}
+.row-btn{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  min-height:var(--tap);padding:13px 14px;border-radius:13px;
+  background:var(--card);border:1.5px solid var(--line);color:var(--ink);
+  transition:border-color .12s, transform .12s;
+}
+.row-btn:hover{border-color:var(--brand);}
+.row-btn:active{transform:scale(.99);}
+.row-btn .ico{
+  flex:none;width:2.1em;height:2.1em;border-radius:11px;display:grid;place-items:center;
+  background:var(--brand-soft);font-size:1.02em;
+}
+.row-btn .tx{flex:1;min-width:0;}
+.row-btn .tx b{display:block;font-size:.98em;font-weight:700;}
+.row-btn .tx span{display:block;font-size:.8em;color:var(--ink-3);line-height:1.35;}
+.row-btn .chev{color:var(--ink-3);font-size:1.1em;flex:none;}
+.row-btn .idx{
+  flex:none;font-size:.72em;font-weight:700;color:var(--ink-3);
+  border:1px solid var(--line);border-radius:6px;padding:2px 5px;
+}
+
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.device[data-cols="1"] .tiles{grid-template-columns:1fr;}
+.tile{
+  text-align:left;padding:14px;border-radius:14px;background:var(--card);
+  border:1.5px solid var(--line);min-height:var(--tap);display:flex;flex-direction:column;gap:6px;
+}
+.tile:hover{border-color:var(--brand);}
+.tile .ico{font-size:1.25em;}
+.tile b{font-size:.98em;}
+.tile span{font-size:.78em;color:var(--ink-3);line-height:1.35;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:var(--tap);padding:0 18px;border-radius:12px;font-weight:700;font-size:.97em;
+  background:var(--brand);color:#fff;width:100%;transition:filter .12s, transform .12s;
+}
+.device[data-contrast="high"] .btn{color:#000;}
+.btn:hover{filter:brightness(1.05);}
+.btn:active{transform:scale(.99);}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+.btn.human{background:var(--human);color:#fff;}
+.device[data-contrast="high"] .btn.human{color:#000;}
+.btn.sm{min-height:calc(var(--tap) * .78);font-size:.88em;padding:0 13px;width:auto;}
+.btn-row{display:flex;gap:9px;}
+.btn-row .btn{width:auto;flex:1;}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:.8em;font-weight:700;
+  padding:7px 11px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);
+  min-height:calc(var(--tap) * .7);
+}
+.chip.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand-deep);}
+.chip.prio{background:var(--good-soft);border-color:var(--good);color:var(--good);}
+.chip.mute{opacity:.45;}
+
+.badge{display:inline-block;font-size:.72em;font-weight:700;padding:3px 8px;border-radius:999px;}
+.badge.good{background:var(--good-soft);color:var(--good);}
+.badge.warn{background:var(--warn-soft);color:var(--warn);}
+.badge.human{background:var(--human-soft);color:var(--human);}
+.badge.brand{background:var(--brand-soft);color:var(--brand-deep);}
+
+/* progress */
+.prog{display:flex;flex-direction:column;gap:7px;}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;font-size:.8em;font-weight:700;color:var(--ink-3);}
+.prog-track{height:7px;border-radius:99px;background:var(--line);overflow:hidden;}
+.prog-fill{height:100%;background:var(--brand);border-radius:99px;transition:width .3s ease;}
+.device[data-motion="off"] .prog-fill{transition:none;}
+
+/* form */
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:.85em;font-weight:700;}
+.field .hint{font-size:.76em;color:var(--ink-3);}
+.field input, .field select, .field textarea{
+  min-height:var(--tap);border-radius:11px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink);padding:10px 12px;font-size:.95em;width:100%;
+  font-family:inherit;
+}
+.field input:focus-visible,.field select:focus-visible{outline:3px solid var(--brand);outline-offset:1px;}
+.stepper{display:flex;align-items:center;gap:9px;}
+.stepper button{
+  width:var(--tap);height:var(--tap);border-radius:12px;border:1.5px solid var(--line);
+  background:var(--card);font-size:1.2em;font-weight:700;display:grid;place-items:center;flex:none;
+}
+.stepper .val{flex:1;text-align:center;font-size:1.15em;font-weight:700;}
+
+/* media / format blocks */
+.fmt{display:flex;flex-direction:column;gap:9px;}
+.isl-panel{
+  border-radius:13px;border:1.5px solid var(--human);background:var(--human-soft);
+  padding:12px;display:flex;flex-direction:column;gap:9px;
+}
+.isl-stage{
+  border-radius:10px;background:var(--card);border:1px dashed var(--human);
+  aspect-ratio:16/10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  color:var(--human);text-align:center;padding:10px;
+}
+.isl-stage .hands{font-size:2em;}
+.isl-stage small{font-size:.72em;color:var(--ink-3);}
+.caption{
+  background:var(--ink);color:var(--paper);border-radius:9px;padding:9px 11px;
+  font-size:.82em;line-height:1.45;
+}
+.device[data-contrast="high"] .caption{background:#1A1A1A;color:#fff;border:1px solid var(--line);}
+.audio-panel{
+  border-radius:13px;border:1.5px solid var(--brand);background:var(--brand-soft);
+  padding:12px;display:flex;align-items:center;gap:11px;
+}
+.audio-panel .play{
+  width:calc(var(--tap) * .92);height:calc(var(--tap) * .92);border-radius:50%;flex:none;
+  background:var(--brand);color:#fff;display:grid;place-items:center;font-size:1.05em;
+}
+.device[data-contrast="high"] .audio-panel .play{color:#000;}
+.audio-panel .tx b{display:block;font-size:.9em;}
+.audio-panel .tx span{display:block;font-size:.76em;color:var(--ink-2);}
+.wave{display:flex;align-items:flex-end;gap:2px;height:18px;}
+.wave i{width:3px;background:var(--brand);border-radius:2px;animation:w 1s ease-in-out infinite;}
+@keyframes w{0%,100%{height:5px}50%{height:17px}}
+@media (prefers-reduced-motion: reduce){ .wave i{animation:none;height:10px} }
+
+.note{
+  display:flex;gap:9px;border-radius:12px;padding:11px 12px;font-size:.82em;line-height:1.45;
+  background:var(--good-soft);color:var(--good);border:1px solid color-mix(in srgb,var(--good) 30%, transparent);
+}
+.note.warn{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 30%, transparent);}
+.note.human{background:var(--human-soft);color:var(--human);border-color:color-mix(in srgb,var(--human) 30%, transparent);}
+.note b{font-weight:700;}
+.note .nico{flex:none;}
+
+/* checklist */
+.check{display:flex;flex-direction:column;gap:8px;}
+.check-item{
+  display:flex;gap:11px;align-items:center;padding:11px 12px;border-radius:12px;
+  border:1.5px solid var(--line);background:var(--card);min-height:var(--tap);width:100%;text-align:left;
+}
+.check-item .box{
+  width:1.5em;height:1.5em;border-radius:7px;border:2px solid var(--ink-3);flex:none;
+  display:grid;place-items:center;font-size:.8em;color:transparent;
+}
+.check-item.done .box{background:var(--good);border-color:var(--good);color:#fff;}
+.device[data-contrast="high"] .check-item.done .box{color:#000;}
+.check-item .tx{flex:1;min-width:0;}
+.check-item .tx b{display:block;font-size:.92em;}
+.check-item .tx span{display:block;font-size:.76em;color:var(--ink-3);}
+
+/* review list */
+.kv{display:flex;flex-direction:column;gap:0;}
+.kv-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:.88em;}
+.kv-row:last-child{border-bottom:0;}
+.kv-row .k{color:var(--ink-3);}
+.kv-row .v{font-weight:700;text-align:right;}
+
+/* tracker */
+.track{display:flex;flex-direction:column;gap:0;}
+.track-step{display:grid;grid-template-columns:auto 1fr;gap:12px;}
+.track-step .rail{display:flex;flex-direction:column;align-items:center;}
+.track-step .dot{
+  width:1.6em;height:1.6em;border-radius:50%;border:2px solid var(--line);background:var(--card);
+  display:grid;place-items:center;font-size:.72em;font-weight:700;color:var(--ink-3);flex:none;
+}
+.track-step .line{width:2px;flex:1;background:var(--line);min-height:14px;}
+.track-step.done .dot{background:var(--good);border-color:var(--good);color:#fff;}
+.device[data-contrast="high"] .track-step.done .dot{color:#000;}
+.track-step.now .dot{border-color:var(--brand);color:var(--brand-deep);background:var(--brand-soft);}
+.track-step .bd{padding-bottom:14px;}
+.track-step .bd b{display:block;font-size:.92em;}
+.track-step .bd span{display:block;font-size:.78em;color:var(--ink-3);}
+
+/* success */
+.success{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:14px 4px;}
+.success .seal{
+  width:4.4em;height:4.4em;border-radius:50%;background:var(--good-soft);color:var(--good);
+  display:grid;place-items:center;font-size:1.3em;border:3px solid var(--good);
+}
+.success h3{font-size:1.25em;}
+
+/* voice / caption bar */
+.assistbar{
+  flex:none;padding:9px 14px;background:var(--ink);color:var(--paper);
+  display:flex;gap:10px;align-items:center;font-size:.8em;line-height:1.4;
+}
+.device[data-contrast="high"] .assistbar{background:#141414;border-top:1px solid var(--line);}
+.assistbar .lbl{
+  flex:none;font-size:.85em;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  opacity:.65;
+}
+.assistbar .said{flex:1;min-width:0;}
+.assistbar .mute{
+  flex:none;min-width:2.2em;min-height:2.2em;border-radius:8px;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.28);font-size:1em;
+}
+
+/* tab bar */
+.tabbar{
+  flex:none;display:flex;background:var(--card);border-top:1px solid var(--line);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-height:var(--tap);border-radius:11px;font-size:.68em;font-weight:700;color:var(--ink-3);
+  padding:5px 2px;
+}
+.tab .ti{font-size:1.35em;line-height:1;}
+.tab.on{color:var(--brand-deep);background:var(--brand-soft);}
+.device[data-contrast="high"] .tab.on{color:var(--brand);}
+.tab.saathi{color:var(--human);}
+
+/* sheet overlay */
+.sheet-scrim{
+  position:absolute;inset:0;background:rgba(15,10,28,.55);display:flex;align-items:flex-end;
+  z-index:20;animation:fade .15s ease;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){ .sheet-scrim{animation:none} }
+.sheet{
+  width:100%;background:var(--card);border-radius:20px 20px 0 0;padding:16px 16px 20px;
+  display:flex;flex-direction:column;gap:12px;max-height:88%;overflow-y:auto;
+}
+.sheet-grab{width:38px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 4px;}
+.sheet h3{font-size:1.15em;}
+
+/* device caption / footnote */
+.footnote{font-size:.74em;color:var(--ink-3);line-height:1.45;}
+
+/* ============================================================
+   AGENT CONSOLE (right)
+   ============================================================ */
+.agent{font-size:12.6px;}
+.agent-idle{color:var(--t-3);font-style:italic;font-size:12.5px;}
+.agent-live{display:flex;flex-direction:column;gap:12px;}
+.agent-hero{
+  border-radius:11px;padding:11px 12px;background:var(--human);color:#fff;
+  display:flex;gap:10px;align-items:center;
+}
+.agent-hero .av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:15px;flex:none;}
+.agent-hero b{display:block;font-size:13px;}
+.agent-hero span{display:block;font-size:11.5px;opacity:.85;}
+.ctx{display:flex;flex-direction:column;gap:0;border:1px solid var(--edge);border-radius:11px;overflow:hidden;}
+.ctx-row{display:flex;justify-content:space-between;gap:10px;padding:8px 11px;border-bottom:1px solid var(--edge);}
+.ctx-row:last-child{border-bottom:0;}
+.ctx-row .k{color:var(--t-3);font-size:11.5px;}
+.ctx-row .v{font-weight:700;font-size:11.8px;text-align:right;}
+.ctx-row.hot{background:color-mix(in srgb,var(--human) 10%, transparent);}
+.agent-block{border:1px dashed var(--edge);border-radius:11px;padding:10px 11px;}
+.agent-block h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--t-3);margin-bottom:6px;font-family:"Atkinson Hyperlegible",sans-serif;}
+.agent-block ul{margin:0;padding-left:16px;color:var(--t-2);font-size:12px;line-height:1.55;}
+.agent-block li + li{margin-top:3px;}
+.locked{color:var(--crit);font-weight:700;}
+
+/* verdict table */
+.verdict{width:100%;border-collapse:collapse;font-size:12.2px;}
+.verdict th,.verdict td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--edge);vertical-align:top;}
+.verdict th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--t-3);font-weight:700;}
+.verdict td:first-child{font-weight:700;white-space:nowrap;}
+.dotok{color:var(--good);font-weight:700;}
+.dothelp{color:var(--human);font-weight:700;}
+
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:60;
+  background:var(--t-1);color:var(--panel);padding:11px 16px;border-radius:11px;
+  font-size:13px;font-weight:700;box-shadow:var(--shadow-lift);max-width:88vw;text-align:center;
+}
+.legend{font-size:11.8px;color:var(--t-3);line-height:1.5;}
+.legend b{color:var(--t-2);}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="mast-id">
+      <div class="mark" aria-hidden="true">बो</div>
+      <div>
+        <h1>BOB SAATHI</h1>
+        <p>Adaptive accessibility · youth banking concept</p>
+      </div>
+    </div>
+    <p class="disclaimer"><b>Concept prototype.</b> Not a live banking application and not an official Bank of Baroda product. All figures, accounts and documents shown are simulated demo data.</p>
+  </header>
+
+  <div class="stage">
+    <!-- ===================== LEFT CONSOLE ===================== -->
+    <div class="console-col">
+      <section class="panel">
+        <div class="panel-hd"><h2>Preview customer experience</h2></div>
+        <div class="panel-bd">
+          <div class="prof-list" id="profList" role="group" aria-label="Accessibility profile"></div>
+          <p class="legend" style="margin:11px 0 0">Switching preserves the customer's exact position in the journey. The screen adapts — it is not a different app.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-hd"><h2>What just changed</h2></div>
+        <div class="panel-bd"><div class="log" id="log"></div></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-hd"><h2>Demo scenarios</h2></div>
+        <div class="panel-bd"><div class="demos" id="demos"></div></div>
+      </section>
+    </div>
+
+    <!-- ===================== DEVICE ===================== -->
+    <div class="device-col">
+      <div class="device" id="device" data-contrast="brand" data-density="comfortable" data-cols="2" data-face="display">
+        <div class="statusbar"><span class="num">9:41</span><span>BOB SAATHI · demo</span><span class="num">▮ 84%</span></div>
+        <div class="appbar" id="appbar"></div>
+        <main class="screen" id="screen" tabindex="-1"></main>
+        <div id="assistbar"></div>
+        <nav class="tabbar" id="tabbar" aria-label="Main"></nav>
+        <div id="sheetHost"></div>
+      </div>
+      <p class="legend" style="max-width:390px;text-align:center">Screen-reader speech is simulated with the browser's own voice. Use <b>Mute</b> in the voice bar to silence it.</p>
+    </div>
+
+    <!-- ===================== AGENT CONSOLE ===================== -->
+    <div class="agent-col">
+      <section class="panel">
+        <div class="panel-hd"><h2>SAATHI agent console</h2></div>
+        <div class="panel-bd agent" id="agent"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-hd"><h2>Independence test</h2></div>
+        <div class="panel-bd">
+          <table class="verdict">
+            <thead><tr><th>Stage</th><th>Alone</th><th>Where SAATHI is needed</th></tr></thead>
+            <tbody id="verdict"></tbody>
+          </table>
+          <p class="legend" style="margin:10px 0 0"><b>●</b> completes independently · <b style="color:var(--human)">◑</b> human assistance by design, not by failure.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   1. ACCESSIBILITY PROFILE SYSTEM
+   Structured preference model — never a diagnosis.
+   ============================================================ */
+const PROFILES = {
+  standard: {
+    id:'standard', label:'Standard', emoji:'👤',
+    who:'Aarav, 21 · no stated preference',
+    visualSupport:'none', hearingSupport:'none', motorSupport:'none', cognitiveSupport:'none',
+    preferredLanguage:'English', interactionMode:'Touch', communicationMode:'Text',
+    textSize:1, contrast:'brand', audio:false, captions:false, isl:false,
+    simplifiedFlow:false, oneTask:false, tap:48, density:'comfortable', cols:2, face:'display',
+    humanAssistance:'On demand',
+    channels:['chat','voice','video'], defaultChannel:'chat'
+  },
+  blind: {
+    id:'blind', label:'Blind / visual impairment', emoji:'🔊',
+    who:'Meera, 22 · voice-first, Hindi',
+    visualSupport:'screen reader', hearingSupport:'none', motorSupport:'none', cognitiveSupport:'none',
+    preferredLanguage:'Hindi', interactionMode:'Voice', communicationMode:'Voice',
+    textSize:1.14, contrast:'brand', audio:true, captions:false, isl:false,
+    simplifiedFlow:false, oneTask:true, tap:60, density:'spacious', cols:1, face:'hyper',
+    humanAssistance:'Guided',
+    channels:['voice','chat'], defaultChannel:'voice'
+  },
+  lowvision: {
+    id:'lowvision', label:'Low vision', emoji:'👁️',
+    who:'Rehan, 19 · magnification + high contrast',
+    visualSupport:'magnification', hearingSupport:'none', motorSupport:'none', cognitiveSupport:'none',
+    preferredLanguage:'English', interactionMode:'Touch + voice', communicationMode:'Voice',
+    textSize:1.32, contrast:'high', audio:true, captions:true, isl:false,
+    simplifiedFlow:false, oneTask:false, tap:58, density:'spacious', cols:1, face:'hyper',
+    humanAssistance:'On demand',
+    channels:['voice','chat','video'], defaultChannel:'voice'
+  },
+  deaf: {
+    id:'deaf', label:'Deaf / hearing impairment', emoji:'🤟',
+    who:'Priya, 20 · ISL, captions on',
+    visualSupport:'none', hearingSupport:'ISL + captions', motorSupport:'none', cognitiveSupport:'none',
+    preferredLanguage:'Hindi', interactionMode:'Touch', communicationMode:'ISL video',
+    textSize:1.06, contrast:'brand', audio:false, captions:true, isl:true,
+    simplifiedFlow:false, oneTask:false, tap:50, density:'comfortable', cols:2, face:'display',
+    humanAssistance:'On demand',
+    channels:['isl','chat'], defaultChannel:'isl'
+  },
+  deafblind: {
+    id:'deafblind', label:'Deafblind / multiple', emoji:'🫱',
+    who:'Sunil, 26 · braille display + relay text',
+    visualSupport:'braille / tactile', hearingSupport:'text relay', motorSupport:'none', cognitiveSupport:'reduced load',
+    preferredLanguage:'English', interactionMode:'Braille display + touch', communicationMode:'Text relay',
+    textSize:1.42, contrast:'high', audio:false, captions:true, isl:false,
+    simplifiedFlow:true, oneTask:true, tap:64, density:'spacious', cols:1, face:'hyper',
+    humanAssistance:'Pre-booked specialist',
+    channels:['relay','book'], defaultChannel:'relay'
+  },
+  locomotor: {
+    id:'locomotor', label:'Locomotor disability', emoji:'🤚',
+    who:'Kabir, 24 · limited hand precision',
+    visualSupport:'none', hearingSupport:'none', motorSupport:'large targets, no gestures', cognitiveSupport:'none',
+    preferredLanguage:'English', interactionMode:'Large touch + voice command', communicationMode:'Voice',
+    textSize:1.14, contrast:'brand', audio:true, captions:false, isl:false,
+    simplifiedFlow:true, oneTask:false, tap:66, density:'spacious', cols:1, face:'display',
+    humanAssistance:'On demand',
+    channels:['voice','chat','video'], defaultChannel:'voice'
+  },
+  cognitive: {
+    id:'cognitive', label:'Cognitive / simplified', emoji:'🧩',
+    who:'Anjali, 23 · easy language, one task at a time',
+    visualSupport:'none', hearingSupport:'none', motorSupport:'none', cognitiveSupport:'easy language, one task',
+    preferredLanguage:'Hindi', interactionMode:'Touch, guided', communicationMode:'Voice + text',
+    textSize:1.16, contrast:'brand', audio:true, captions:true, isl:false,
+    simplifiedFlow:true, oneTask:true, tap:58, density:'spacious', cols:1, face:'display',
+    humanAssistance:'Guided',
+    channels:['voice','chat','book'], defaultChannel:'voice'
+  }
+};
+const PROFILE_ORDER = ['standard','blind','lowvision','deaf','deafblind','locomotor','cognitive'];
+
+const CHANNELS = {
+  chat:{icon:'💬', label:'Text chat', sub:'Type — no calling needed'},
+  voice:{icon:'🔊', label:'Voice call', sub:'A trained officer talks you through'},
+  video:{icon:'🎥', label:'Video call', sub:'See and be seen'},
+  isl:{icon:'🤟', label:'ISL video call', sub:'Indian Sign Language interpreter'},
+  relay:{icon:'⌨️', label:'Text relay', sub:'Works with your braille display'},
+  book:{icon:'📅', label:'Book accessible help', sub:'Specialist or branch, at a time you pick'}
+};
+
+/* ============================================================
+   2. MOCK DATA — schemes are structured, not hardcoded into UI
+   ============================================================ */
+const SCHEMES = [
+  {id:'pre-matric', name:'Pre-Matric Scholarship for Students with Disabilities', category:'Scholarship',
+   beneficiary:'School students, Class IX–X', age:'Class-linked', disability:'40%+ any specified disability',
+   benefit:'₹500–800/month + ₹1,000 book grant + disability allowance',
+   eligibility:'Family income up to ₹2.5 lakh/year · enrolled in Class IX or X',
+   documents:['Disability certificate / UDID','Income certificate','School bonafide','Bank account'],
+   apply:'National Scholarship Portal', state:'All India', status:'Active'},
+  {id:'post-matric', name:'Post-Matric Scholarship for Students with Disabilities', category:'Scholarship',
+   beneficiary:'Class XI and above, incl. degree courses', age:'17+', disability:'40%+ any specified disability',
+   benefit:'Maintenance ₹550–1,600/month + fee reimbursement up to ₹1.5 lakh/year',
+   eligibility:'Family income up to ₹2.5 lakh/year · enrolled Class XI onwards',
+   documents:['Disability certificate / UDID','Income certificate','Fee receipt','Last marksheet'],
+   apply:'National Scholarship Portal', state:'All India', status:'Active'},
+  {id:'top-class', name:'Top Class Education Scholarship', category:'Education support',
+   beneficiary:'Students at notified premier institutions', age:'17–30', disability:'40%+ benchmark disability',
+   benefit:'Tuition support, monthly allowance, laptop with screen reader, reader/scribe allowance',
+   eligibility:'Family income up to ₹8 lakh/year · admission to a notified institution',
+   documents:['Disability certificate / UDID','Income certificate','Admission letter'],
+   apply:'National Scholarship Portal', state:'All India', status:'Active'},
+  {id:'adip', name:'ADIP — Assistive Devices Scheme', category:'Assistive device support',
+   beneficiary:'Persons with disabilities needing aids and appliances', age:'All ages', disability:'Certified disability',
+   benefit:'Free or subsidised assistive devices from the approved list',
+   eligibility:'Income-linked subsidy slabs · device not already received in its validity period',
+   documents:['Disability certificate / UDID','Income proof','Aadhaar'],
+   apply:'ARJUN portal or assessment camp', state:'All India', status:'Active'},
+  {id:'pm-daksh', name:'PM-DAKSH Skill Training for Divyangjan', category:'Skill development',
+   beneficiary:'Persons with disabilities seeking employment', age:'15–59', disability:'Any RPwD Act category',
+   benefit:'Free skill training across 250+ courses with employer linkage',
+   eligibility:'Aadhaar e-KYC · age 15–59',
+   documents:['Aadhaar','Disability certificate / UDID'],
+   apply:'PM-DAKSH portal', state:'All India', status:'Active'},
+  {id:'nhfdc', name:'NHFDC Self-Employment Loan', category:'Entrepreneurship support',
+   beneficiary:'Divyang entrepreneurs starting or growing a business', age:'18+', disability:'40%+',
+   benefit:'Concessional loan from 5% p.a., repayment 3–10 years',
+   eligibility:'40%+ disability · viable business plan · routed via state channelising agency',
+   documents:['Disability certificate / UDID','Age proof','Business plan','Quotations'],
+   apply:'State channelising agency', state:'All India', status:'Active'},
+  {id:'pmegp', name:'PMEGP — Special Category Subsidy', category:'Entrepreneurship support',
+   beneficiary:'New micro-enterprises; PwD counted as special category', age:'18+', disability:'Any, with certificate',
+   benefit:'35% margin-money subsidy (rural) / 25% (urban); own contribution only 5%',
+   eligibility:'New unit · project within scheme ceilings · special-category certificate',
+   documents:['Disability certificate','Project report','Aadhaar','Qualification proof'],
+   apply:'PMEGP e-portal, through your bank', state:'All India', status:'Active'},
+  {id:'up-pension', name:'UP Divyangjan Pension', category:'Financial assistance',
+   beneficiary:'Persons with disabilities resident in Uttar Pradesh', age:'18+', disability:'40%+ certified',
+   benefit:'₹1,000 per month, paid quarterly by direct benefit transfer',
+   eligibility:'UP domicile · family income limits apply · no other government pension',
+   documents:['Disability certificate','Domicile','Income certificate','Bank passbook'],
+   apply:'UP social pension portal', state:'Uttar Pradesh', status:'Active'}
+];
+
+const PROCESSES = [
+  {id:'kyc', title:'Update your KYC', easy:'Update your ID details', mins:4,
+   why:'Banks must re-check your ID papers from time to time. If KYC expires, some services pause.',
+   easyWhy:'The bank needs to check your ID papers again. It takes a few minutes.',
+   steps:['Open KYC update','Check your address','Upload or scan your ID','Confirm with OTP'],
+   action:'Start KYC update'},
+  {id:'upi', title:'Send money with UPI', easy:'Send money to someone', mins:3,
+   why:'UPI moves money instantly between bank accounts using a UPI ID or phone number.',
+   easyWhy:'UPI sends money from your account to another person in seconds.',
+   steps:['Pick who to pay','Enter the amount','Check the details','Enter your UPI PIN'],
+   action:'Send money now'},
+  {id:'nominee', title:'Add a nominee', easy:'Choose who gets your money', mins:3,
+   why:'A nominee is the person your money goes to if something happens to you. It avoids long paperwork later.',
+   easyWhy:'Choose one person who will get your money if something happens to you.',
+   steps:['Open nomination','Add their name and date of birth','Add relationship','Confirm'],
+   action:'Add a nominee'},
+  {id:'fd', title:'Open a fixed deposit', easy:'Save money and earn more', mins:3,
+   why:'A fixed deposit locks your money for a chosen period and pays a higher interest rate than a savings account.',
+   easyWhy:'Keep money aside for some months. The bank pays you extra money for it.',
+   steps:['Choose amount','Choose how long','See what you will earn','Confirm'],
+   action:'Open an FD'},
+  {id:'block', title:'Block a lost card', easy:'Stop a lost card', mins:1,
+   why:'Blocking stops anyone using your card. You can order a replacement in the same flow.',
+   easyWhy:'If your card is lost, stop it here so nobody can use it.',
+   steps:['Pick the card','Tell us why','Confirm block','Order a new card'],
+   action:'Block card now'},
+  {id:'eduloan', title:'How an education loan works', easy:'Money for your studies', mins:6,
+   why:'The bank pays your course fees. You repay after your course ends, usually in monthly instalments.',
+   easyWhy:'The bank pays for your studies. You pay it back later, slowly, every month.',
+   steps:['Check if you qualify','Add course details','Upload papers','Track your application'],
+   action:'Start education loan'}
+];
+
+/* ============================================================
+   3. JOURNEY ENGINE — one definition, many experiences
+   ============================================================ */
+const EDU_STEPS = [
+  {k:'intro',   t:'Education loan',        e:'Money for your studies'},
+  {k:'explain', t:'Understand the loan',   e:'What this means'},
+  {k:'elig',    t:'Check eligibility',     e:'Can you get it?'},
+  {k:'course',  t:'Education details',     e:'What are you studying?'},
+  {k:'amount',  t:'Loan requirement',      e:'How much do you need?'},
+  {k:'benefit', t:'Benefits you may get',  e:'Free money you can also get'},
+  {k:'docs',    t:'Document checklist',    e:'Papers you need'},
+  {k:'you',     t:'Your details',          e:'About you'},
+  {k:'co',      t:'Co-applicant',          e:'One family member'},
+  {k:'upload',  t:'Upload documents',      e:'Send your papers'},
+  {k:'kyc',     t:'Identity check (KYC)',  e:'Prove it is you'},
+  {k:'review',  t:'Review application',    e:'Check everything'},
+  {k:'submit',  t:'Submit',                e:'Send it'},
+  {k:'track',   t:'Track application',     e:'What happens now'},
+  {k:'sanction',t:'Sanction',              e:'Loan approved'},
+  {k:'disburse',t:'Disbursement',          e:'Money sent'}
+];
+const MSME_STEPS = [
+  {k:'intro',   t:'Business loan',          e:'Money for your business'},
+  {k:'explain', t:'Understand the loan',    e:'What this means'},
+  {k:'idea',    t:'Your business',          e:'What is your work?'},
+  {k:'stage',   t:'New or existing',        e:'Have you started?'},
+  {k:'amount',  t:'Amount and purpose',     e:'How much do you need?'},
+  {k:'elig',    t:'Basic eligibility',      e:'Can you get it?'},
+  {k:'benefit', t:'Schemes and subsidy',    e:'Government help'},
+  {k:'udyam',   t:'Udyam registration',     e:'Register your business'},
+  {k:'you',     t:'Your details',           e:'About you'},
+  {k:'docs',    t:'Document checklist',     e:'Papers you need'},
+  {k:'upload',  t:'Upload documents',       e:'Send your papers'},
+  {k:'kyc',     t:'Identity check (KYC)',   e:'Prove it is you'},
+  {k:'review',  t:'Review application',     e:'Check everything'},
+  {k:'submit',  t:'Submit',                 e:'Send it'},
+  {k:'track',   t:'Track application',      e:'What happens now'},
+  {k:'sanction',t:'Sanction',               e:'Loan approved'},
+  {k:'disburse',t:'Disbursement',           e:'Money sent'}
+];
+const XFER_STEPS = [
+  {k:'from',    t:'Pay from',        e:'Which account?'},
+  {k:'to',      t:'Pay to',          e:'Who gets it?'},
+  {k:'amt',     t:'Amount',          e:'How much?'},
+  {k:'review',  t:'Check details',   e:'Is this right?'},
+  {k:'auth',    t:'Authenticate',    e:'Enter your PIN'},
+  {k:'done',    t:'Done',            e:'Money sent'}
+];
+const JOURNEYS = {
+  edu:  {id:'edu',  name:'Education loan',  icon:'🎓', steps:EDU_STEPS,
+         story:'21-year-old student, higher education'},
+  msme: {id:'msme', name:'Business loan',   icon:'🛠️', steps:MSME_STEPS,
+         story:'27-year-old Divyang entrepreneur'},
+  xfer: {id:'xfer', name:'Transfer money',  icon:'💸', steps:XFER_STEPS,
+         story:'Everyday payment'}
+};
+
+/* ============================================================
+   4. STATE
+   ============================================================ */
+const state = {
+  profile:'standard',
+  prevProfile:null,
+  screen:'home',          // home | do | know | benefits | grow | journey | process | scheme | onboard
+  journey:null, step:0,
+  processId:null, schemeId:null,
+  onboardStep:0, onboardPicks:[],
+  sheet:null,             // saathi | null
+  agent:null,             // active agent context
+  muted:false,
+  changes:[],
+  form:{
+    course:'B.Tech Computer Science', institution:'NIT Warangal', years:'4 years', fees:'₹4,80,000',
+    amount:480000, coName:'Sushma Devi (Mother)', business:'Screen-printing unit', purpose:'Machine + working capital',
+    bizAmount:600000, upi:'priya@bobupi', xferAmount:2500
+  },
+  done:{docs:{}, upload:{}}
+};
+const P = () => PROFILES[state.profile];
+
+/* ============================================================
+   5. HELPERS
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/** easy-language switch: t(standardCopy, easyCopy) */
+const t = (std, easy) => (P().simplifiedFlow || P().cognitiveSupport !== 'none') && easy ? easy : std;
+const money = n => '₹' + Number(n).toLocaleString('en-IN');
+
+function steps(){
+  const j = JOURNEYS[state.journey];
+  if(!j) return [];
+  if(!P().oneTask) return j.steps;
+  // one-task profiles split compound steps into single-question screens
+  const out = [];
+  j.steps.forEach(s => {
+    if(s.k === 'course'){
+      out.push({...s, sub:'What course?'}, {...s, k:'course2', sub:'Which institution?'}, {...s, k:'course3', sub:'What are the fees?'});
+    } else if(s.k === 'you'){
+      out.push({...s, sub:'Your name'}, {...s, k:'you2', sub:'Your phone number'});
+    } else out.push(s);
+  });
+  return out;
+}
+function speak(text){
+  if(!P().audio || state.muted || !text) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.98; u.pitch = 1;
+    window.speechSynthesis.speak(u);
+  }catch(e){ /* speech unavailable — the caption bar still shows the text */ }
+}
+let lastSaid = '';
+function announce(text){
+  lastSaid = text;
+  speak(text);
+  renderAssistBar();
+}
+function toast(msg){
+  document.querySelectorAll('.toast').forEach(n => n.remove());
+  const d = document.createElement('div');
+  d.className = 'toast'; d.textContent = msg; d.setAttribute('role','status');
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 2600);
+}
+
+/* ============================================================
+   6. DEVICE CHROME
+   ============================================================ */
+function applyProfileChrome(){
+  const p = P(), d = $('device');
+  d.style.setProperty('--fs', p.textSize);
+  d.style.setProperty('--tap', p.tap + 'px');
+  d.dataset.contrast = p.contrast;
+  d.dataset.density = p.density;
+  d.dataset.cols = p.cols;
+  d.dataset.face = p.face;
+}
+
+function renderAppbar(){
+  const p = P(), bar = $('appbar');
+  let eyebrow = '', title = '', back = false;
+  if(state.screen === 'home'){ eyebrow = t('Good morning','Hello'); title = 'Priya'; }
+  else if(state.screen === 'onboard'){ eyebrow = 'Setting up'; title = t('Personalise banking','Set up your banking'); }
+  else if(state.screen === 'journey'){
+    const j = JOURNEYS[state.journey], st = steps()[state.step];
+    eyebrow = j.name; title = t(st.t, st.e); back = true;
+  }
+  else if(state.screen === 'process'){ const pr = PROCESSES.find(x=>x.id===state.processId); eyebrow = t('Learn how','Learn'); title = t(pr.title, pr.easy); back = true; }
+  else if(state.screen === 'scheme'){ eyebrow = t('Benefit','Government help'); title = 'Scheme details'; back = true; }
+  else if(state.screen === 'do'){ eyebrow = t('Do my banking','Banking'); title = t('What would you like to do?','Choose one'); back = true; }
+  else if(state.screen === 'know'){ eyebrow = t('Learn how','Learn'); title = t('Banking, explained','How things work'); back = true; }
+  else if(state.screen === 'benefits'){ eyebrow = t('Benefits','Government help'); title = t('Schemes for you','Money you can get'); back = true; }
+  else if(state.screen === 'grow'){ eyebrow = 'Grow'; title = t('Financial journeys','Big money plans'); back = true; }
+
+  bar.innerHTML =
+    (back ? `<button class="back" data-a="back" aria-label="${esc(t('Go back','Back'))}">←</button>` : '') +
+    `<h2><span class="eyebrow">${esc(eyebrow)}</span>${esc(title)}</h2>` +
+    `<span class="mode-chip">${p.emoji} ${esc(p.interactionMode)}</span>`;
+}
+
+function renderTabs(){
+  const tabs = [
+    {k:'home', i:'🏠', l:t('Home','Home')},
+    {k:'do',   i:'💳', l:t('Do','Bank')},
+    {k:'know', i:'💡', l:t('Learn','Learn')},
+    {k:'benefits', i:'🎁', l:t('Benefits','Help')},
+    {k:'saathi', i:'🤝', l:'SAATHI'}
+  ];
+  $('tabbar').innerHTML = tabs.map(x => {
+    const on = state.screen === x.k ? ' on' : '';
+    const cls = x.k === 'saathi' ? ' saathi' : on;
+    return `<button class="tab${cls}" data-a="${x.k==='saathi'?'saathi':'tab'}" data-v="${x.k}">
+      <span class="ti" aria-hidden="true">${x.i}</span>${esc(x.l)}</button>`;
+  }).join('');
+}
+
+function renderAssistBar(){
+  const p = P(), host = $('assistbar');
+  if(p.audio){
+    host.innerHTML = `<div class="assistbar">
+      <span class="lbl">${p.visualSupport === 'screen reader' ? 'Screen reader' : 'Voice'}</span>
+      <span class="said">${esc(lastSaid || 'Ready. Tap anything to hear it.')}</span>
+      <button class="mute" data-a="mute" aria-label="${state.muted?'Unmute':'Mute'} speech">${state.muted?'🔇':'🔊'}</button>
+    </div>`;
+  } else if(p.captions){
+    host.innerHTML = `<div class="assistbar">
+      <span class="lbl">Captions</span>
+      <span class="said">${esc(lastSaid || 'All spoken content appears here as text.')}</span>
+    </div>`;
+  } else host.innerHTML = '';
+}
+
+/* ============================================================
+   7. SHARED UI FRAGMENTS
+   ============================================================ */
+function formatBlock(title, body, opts = {}){
+  const p = P(); let out = '';
+  if(p.isl){
+    out += `<div class="isl-panel">
+      <div class="isl-stage"><span class="hands" aria-hidden="true">🤟</span>
+        <b>${esc(t('Watch in Indian Sign Language','Watch in ISL'))}</b>
+        <small>ISL explainer · ${esc(title)}</small></div>
+      <button class="btn sm ghost" data-a="play-isl" data-v="${esc(title)}">▶ ${esc(t('Play ISL explainer','Play ISL'))}</button>
+    </div>
+    <div class="caption">${esc(body)}</div>`;
+  }
+  if(p.audio){
+    out += `<div class="audio-panel">
+      <button class="play" data-a="say" data-v="${esc(body)}" aria-label="${esc(t('Listen to explanation','Listen'))}">▶</button>
+      <div class="tx"><b>${esc(t('Listen to this','Listen'))}</b><span>${esc(title)} · ${esc(P().preferredLanguage)}</span></div>
+      <div class="wave" aria-hidden="true"><i style="animation-delay:0s"></i><i style="animation-delay:.12s"></i><i style="animation-delay:.24s"></i><i style="animation-delay:.36s"></i></div>
+    </div>`;
+  }
+  if(!p.isl) out += `<p class="lede">${esc(body)}</p>`;
+  if(p.captions && !p.isl && !p.audio) out += `<div class="caption">${esc(t('Caption: ','Caption: ') + body)}</div>`;
+  return out;
+}
+
+function securityNote(){
+  return `<div class="note human"><span class="nico" aria-hidden="true">🔒</span><span>
+    <b>${esc(t('Your SAATHI can guide you — never ask for your OTP or PIN.','Nobody from the bank will ask for your OTP or PIN.'))}</b>
+    ${esc(t('Authentication always stays with you.','You always type it yourself.'))}</span></div>`;
+}
+
+function progressBar(){
+  const all = steps(), i = state.step, pct = Math.round(((i+1)/all.length)*100);
+  const label = t(`Step ${i+1} of ${all.length}`, `Step ${i+1} of ${all.length}`);
+  return `<div class="prog">
+    <div class="prog-top"><span class="num">${esc(label)}</span><span class="num">${pct}%</span></div>
+    <div class="prog-track" role="progressbar" aria-valuenow="${i+1}" aria-valuemin="1" aria-valuemax="${all.length}">
+      <div class="prog-fill" style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+function navButtons(nextLabel){
+  const p = P(), last = state.step >= steps().length - 1;
+  const next = nextLabel || t('Continue','Next →');
+  if(p.oneTask || p.simplifiedFlow){
+    return `<div style="display:flex;flex-direction:column;gap:9px;margin-top:auto">
+      ${last ? '' : `<button class="btn" data-a="next">${esc(next)}</button>`}
+      <button class="btn ghost" data-a="back">${esc(t('Go back','← Back'))}</button>
+    </div>`;
+  }
+  return `<div class="btn-row" style="margin-top:auto">
+    <button class="btn ghost" data-a="back" style="flex:0 0 34%">${esc(t('Back','Back'))}</button>
+    ${last ? '' : `<button class="btn" data-a="next">${esc(next)}</button>`}
+  </div>`;
+}
+
+function saathiInline(){
+  const ch = CHANNELS[P().defaultChannel];
+  return `<button class="row-btn" data-a="saathi" style="border-color:var(--human)">
+    <span class="ico" style="background:var(--human-soft)" aria-hidden="true">🤝</span>
+    <span class="tx"><b>${esc(t('Talk to my SAATHI','Get help from a person'))}</b>
+      <span>${esc(ch.icon + ' ' + ch.label)} · ${esc(t('knows where you are','they already know your step'))}</span></span>
+    <span class="chev" aria-hidden="true">›</span></button>`;
+}
+
+/* ============================================================
+   8. SCREENS
+   ============================================================ */
+const SCREENS = {};
+
+SCREENS.home = () => {
+  const p = P();
+  const groups = [
+    {k:'do', i:'💳', b:t('Do my banking','Use my money'), s:t('Transfer, FD, cards, KYC','Send money, save money')},
+    {k:'know', i:'💡', b:t('Learn how','Learn'), s:t('Banking explained your way', p.isl ? 'ISL, video and easy words' : 'Simple steps')},
+    {k:'benefits', i:'🎁', b:t('Benefits','Government help'), s:t('Scholarships and schemes','Money from the government')},
+    {k:'grow', i:'📈', b:t('Grow','Big plans'), s:t('Education loan · Business loan','Study loan · Work loan')}
+  ];
+  const quick = [
+    {a:'quick-balance', i:'👛', l:t('Balance','My money')},
+    {a:'xfer', i:'💸', l:t('Send money','Send')},
+    {a:'quick-block', i:'🛑', l:t('Block card','Stop card')},
+    {a:'quick-kyc', i:'🪪', l:t('Update KYC','ID update')}
+  ];
+
+  const head = `<div>
+    <h3>${esc(t('What would you like to do?','What do you want to do?'))}</h3>
+    <p class="meta">${esc(t('Your preferences are already set — ' + p.interactionMode.toLowerCase() + ', ' + p.preferredLanguage + '.','We remember how you like to bank.'))}</p>
+  </div>`;
+
+  // sequential list for voice/braille profiles; tiles for visual profiles
+  const main = (p.cols === 1 || p.visualSupport !== 'none')
+    ? `<div class="rows">${groups.map((g,i) => `
+        <button class="row-btn" data-a="tab" data-v="${g.k}">
+          ${p.audio ? `<span class="idx num">${i+1}/${groups.length}</span>` : `<span class="ico" aria-hidden="true">${g.i}</span>`}
+          <span class="tx"><b>${esc(g.b)}</b><span>${esc(g.s)}</span></span>
+          <span class="chev" aria-hidden="true">›</span></button>`).join('')}</div>`
+    : `<div class="tiles">${groups.map(g => `
+        <button class="tile" data-a="tab" data-v="${g.k}">
+          <span class="ico" aria-hidden="true">${g.i}</span><b>${esc(g.b)}</b><span>${esc(g.s)}</span></button>`).join('')}</div>`;
+
+  const quickRow = p.simplifiedFlow ? '' : `
+    <div>
+      <p class="eyebrow-s" style="margin-bottom:8px">${esc(t('Quick actions','Fast things'))}</p>
+      <div class="chips">${quick.map(q => `<button class="chip" data-a="${q.a}">${q.i} ${esc(q.l)}</button>`).join('')}</div>
+    </div>`;
+
+  const supports = [p.visualSupport, p.hearingSupport, p.motorSupport, p.cognitiveSupport].filter(x => x !== 'none');
+  const pref = supports.length
+    ? 'Saved preference: ' + supports.join(' · ') + '. Change any time in Settings.'
+    : 'No accessibility preference set. You can turn on voice, large text, ISL or easy language any time in Settings.';
+  return head + main + quickRow + saathiInline() +
+    `<p class="footnote">${esc(t(pref,'You can change how this app works any time.'))}</p>`;
+};
+
+SCREENS.do = () => {
+  const ops = [
+    {a:'xfer', i:'💸', b:t('Transfer money','Send money'), s:t('UPI, IMPS or to a saved payee','To a person you know')},
+    {a:'quick-balance', i:'👛', b:t('Check balance','See my money'), s:t('Savings · 3421','Your account')},
+    {a:'quick-fd', i:'🏦', b:t('Open a fixed deposit','Save for later'), s:t('Earn more on idle money','Bank pays you extra')},
+    {a:'quick-block', i:'🛑', b:t('Block a card','Stop a card'), s:t('Lost or stolen card','If you lost it')},
+    {a:'quick-kyc', i:'🪪', b:t('Update KYC','Update ID papers'), s:t('Re-verify your documents','Show ID again')},
+    {a:'quick-nom', i:'👪', b:t('Add a nominee','Choose a person'), s:t('Who receives your money','Who gets your money later')},
+    {a:'quick-sip', i:'📊', b:t('Start a SIP','Save every month'), s:t('Invest monthly, from ₹500','Put money aside monthly')}
+  ];
+  return `<div class="rows">${ops.map(o => `
+    <button class="row-btn" data-a="${o.a}">
+      <span class="ico" aria-hidden="true">${o.i}</span>
+      <span class="tx"><b>${esc(o.b)}</b><span>${esc(o.s)}</span></span>
+      <span class="chev" aria-hidden="true">›</span></button>`).join('')}</div>` + saathiInline();
+};
+
+SCREENS.know = () => {
+  const p = P();
+  const prioLabel = p.isl ? 'ISL first' : p.audio ? 'Audio first' : p.simplifiedFlow ? 'Easy language first' : 'All formats';
+  return `<div>
+      <h3>${esc(t('Every process, in your format','Learn in your way'))}</h3>
+      <p class="meta">${esc(t('Content order follows your preference: ' + prioLabel + '.','We show your favourite way first.'))}</p>
+    </div>` +
+    `<div class="rows">${PROCESSES.map(pr => `
+      <button class="row-btn" data-a="process" data-v="${pr.id}">
+        <span class="ico" aria-hidden="true">${p.isl?'🤟':p.audio?'🔊':'📖'}</span>
+        <span class="tx"><b>${esc(t(pr.title, pr.easy))}</b><span>${esc(pr.mins)} min · ${esc(formatsFor(pr).join(' · '))}</span></span>
+        <span class="chev" aria-hidden="true">›</span></button>`).join('')}</div>`;
+};
+
+function formatsFor(){
+  const p = P(), out = [];
+  if(p.isl) out.push('ISL');
+  if(p.audio) out.push('Audio');
+  if(p.captions) out.push('Captions');
+  if(p.simplifiedFlow) out.push('Easy words');
+  if(!out.length) out.push('Video','Text');
+  return out;
+}
+
+SCREENS.process = () => {
+  const p = P(), pr = PROCESSES.find(x => x.id === state.processId);
+  const why = t(pr.why, pr.easyWhy);
+  const allFormats = [
+    {k:'video', i:'🎥', l:'Video', on:true},
+    {k:'isl', i:'🤟', l:'ISL', on:p.isl},
+    {k:'audio', i:'🔊', l:'Listen', on:p.audio},
+    {k:'easy', i:'📖', l:'Easy words', on:p.simplifiedFlow},
+    {k:'text', i:'📝', l:'Read', on:!p.audio}
+  ];
+  const chips = allFormats.map(f =>
+    `<button class="chip ${f.on?'prio':'mute'}" data-a="say" data-v="${esc(f.l)}">${f.i} ${esc(f.l)}${f.on?' ✓':''}</button>`).join('');
+
+  return `<div><h3>${esc(t(pr.title, pr.easy))}</h3>
+      <p class="meta">${esc(pr.mins)} ${esc(t('minute read','minutes'))} · ${esc(t('prioritised for your profile','your way first'))}</p></div>
+    <div class="chips">${chips}</div>
+    ${formatBlock(pr.title, why)}
+    <div class="card"><p class="eyebrow-s" style="margin-bottom:9px">${esc(t('What happens','Steps'))}</p>
+      <div class="track">${pr.steps.map((s,i) => `
+        <div class="track-step"><div class="rail"><div class="dot num">${i+1}</div>${i<pr.steps.length-1?'<div class="line"></div>':''}</div>
+        <div class="bd"><b>${esc(s)}</b></div></div>`).join('')}</div></div>
+    <button class="btn" data-a="${pr.id==='eduloan'?'journey-edu':'start-process'}">${esc(t(pr.action, pr.action))} →</button>
+    ${saathiInline()}
+    <p class="footnote">${esc(t('Information becomes action: every explainer ends with the real process, not a phone number.','You can start right here.'))}</p>`;
+};
+
+SCREENS.benefits = () => {
+  return `<div><h3>${esc(t('Benefits you may be eligible for','Money you can get'))}</h3>
+      <p class="meta">${esc(t('Matched to your profile, age and disability record. Updated from official sources.','Government schemes for you.'))}</p></div>
+    <div class="rows">${SCHEMES.map(s => `
+      <button class="row-btn" data-a="scheme" data-v="${s.id}">
+        <span class="ico" aria-hidden="true">🎁</span>
+        <span class="tx"><b>${esc(s.name)}</b><span>${esc(s.category)} · ${esc(s.state)}</span></span>
+        <span class="chev" aria-hidden="true">›</span></button>`).join('')}</div>
+    <p class="footnote">${esc('Schemes come from a structured data layer — adding, editing or removing one does not change a single screen.')}</p>`;
+};
+
+SCREENS.scheme = () => {
+  const s = SCHEMES.find(x => x.id === state.schemeId);
+  return `<div><span class="badge brand">${esc(s.category)}</span><h3 style="margin-top:8px">${esc(s.name)}</h3></div>
+    ${formatBlock(s.name, s.benefit)}
+    <div class="card"><div class="kv">
+      <div class="kv-row"><span class="k">${esc(t('Who can benefit','Who'))}</span><span class="v">${esc(s.beneficiary)}</span></div>
+      <div class="kv-row"><span class="k">${esc(t('Age','Age'))}</span><span class="v">${esc(s.age)}</span></div>
+      <div class="kv-row"><span class="k">${esc(t('Disability','Disability'))}</span><span class="v">${esc(s.disability)}</span></div>
+      <div class="kv-row"><span class="k">${esc(t('Eligibility','Rules'))}</span><span class="v">${esc(s.eligibility)}</span></div>
+      <div class="kv-row"><span class="k">${esc(t('Where','Where'))}</span><span class="v">${esc(s.state)}</span></div>
+      <div class="kv-row"><span class="k">${esc(t('Status','Status'))}</span><span class="v"><span class="badge good">${esc(s.status)}</span></span></div>
+    </div></div>
+    <div class="card"><p class="eyebrow-s" style="margin-bottom:9px">${esc(t('Documents needed','Papers you need'))}</p>
+      <div class="check">${s.documents.map(d => `
+        <div class="check-item done"><span class="box" aria-hidden="true">✓</span><span class="tx"><b>${esc(d)}</b></span></div>`).join('')}</div></div>
+    <div class="btn-row"><button class="btn ghost" data-a="say" data-v="${esc(s.eligibility)}" style="flex:0 0 40%">${esc(t('Learn more','Tell me more'))}</button>
+      <button class="btn" data-a="apply-scheme">${esc(t('Apply · ' + s.apply, 'Apply now'))}</button></div>
+    ${saathiInline()}`;
+};
+
+SCREENS.grow = () => {
+  return `<div><h3>${esc(t('Two journeys, end to end','Two big plans'))}</h3>
+      <p class="meta">${esc(t('Discover → eligibility → apply → verify → track → money in your account.','From start to money in your account.'))}</p></div>
+    <div class="rows">
+      <button class="row-btn" data-a="journey-edu">
+        <span class="ico" aria-hidden="true">🎓</span>
+        <span class="tx"><b>${esc(t('Education loan','Money for studies'))}</b><span>${esc(t('For your course fees, up to ₹20 lakh','Pay for your course'))}</span></span>
+        <span class="chev" aria-hidden="true">›</span></button>
+      <button class="row-btn" data-a="journey-msme">
+        <span class="ico" aria-hidden="true">🛠️</span>
+        <span class="tx"><b>${esc(t('Business loan (MSME)','Money for work'))}</b><span>${esc(t('Start or grow a small business','Start your own work'))}</span></span>
+        <span class="chev" aria-hidden="true">›</span></button>
+      <button class="row-btn" data-a="quick-sip">
+        <span class="ico" aria-hidden="true">📊</span>
+        <span class="tx"><b>${esc(t('Savings and investments','Save money'))}</b><span>${esc(t('SIP from ₹500 a month','₹500 every month'))}</span></span>
+        <span class="chev" aria-hidden="true">›</span></button>
+    </div>${saathiInline()}`;
+};
+
+/* ---------- ONBOARDING (new customer, never a diagnosis) ---------- */
+const MODES = [
+  {k:'voice', i:'🔊', l:'Voice', s:'Read things out to me'},
+  {k:'large', i:'👁️', l:'Large text', s:'Bigger, higher contrast'},
+  {k:'isl', i:'🤟', l:'ISL', s:'Indian Sign Language'},
+  {k:'text', i:'💬', l:'Text', s:'I prefer typing and reading'},
+  {k:'easy', i:'📖', l:'Easy language', s:'Short, simple words'},
+  {k:'simple', i:'👆', l:'Simple taps', s:'Large buttons, fewer steps'}
+];
+const TASKS = [
+  {q:'Find your account balance.', hint:'Tap the button you would use.'},
+  {q:'Find how to block your card.', hint:'Where would you look?'},
+  {q:'Understand this transaction.', hint:'₹1,240 · UPI · 12 Sep'},
+  {q:'Find how to apply for an education loan.', hint:'Take your time.'}
+];
+SCREENS.onboard = () => {
+  const s = state.onboardStep;
+  if(s === 0){
+    return `<div><h3>Let's personalise how you bank.</h3>
+      <p class="lede">No forms about your health. No labels. Just tell us what works for you — and change it whenever you like.</p></div>
+      <div class="note"><span class="nico">🛡️</span><span>We never ask for or record a diagnosis. You choose how the app behaves.</span></div>
+      <button class="btn" data-a="ob-next" style="margin-top:auto">Start</button>
+      <button class="btn ghost" data-a="ob-skip">I'm an existing customer</button>`;
+  }
+  if(s === 1){
+    return `<div><h3>How would you like to bank?</h3><p class="meta">Pick any that appeal. Try them — nothing is final.</p></div>
+      <div class="rows">${MODES.map(m => `
+        <button class="row-btn ${state.onboardPicks.includes(m.k)?'':''}" data-a="ob-pick" data-v="${m.k}"
+          style="${state.onboardPicks.includes(m.k)?'border-color:var(--brand);background:var(--brand-soft)':''}">
+          <span class="ico" aria-hidden="true">${m.i}</span>
+          <span class="tx"><b>${esc(m.l)}</b><span>${esc(m.s)}</span></span>
+          <span class="chev" aria-hidden="true">${state.onboardPicks.includes(m.k)?'✓':'+'}</span></button>`).join('')}</div>
+      <button class="btn" data-a="ob-next" style="margin-top:auto">Try a few tasks →</button>`;
+  }
+  if(s >= 2 && s <= 5){
+    const task = TASKS[s-2];
+    return `<div><span class="eyebrow-s">Task ${s-1} of 4</span>
+      <h3 style="margin-top:6px">${esc(task.q)}</h3><p class="meta">${esc(task.hint)}</p></div>
+      <div class="tiles">
+        <button class="tile" data-a="ob-next"><span class="ico">👛</span><b>Balance</b></button>
+        <button class="tile" data-a="ob-next"><span class="ico">🛑</span><b>Cards</b></button>
+        <button class="tile" data-a="ob-next"><span class="ico">📜</span><b>History</b></button>
+        <button class="tile" data-a="ob-next"><span class="ico">🎓</span><b>Loans</b></button>
+      </div>
+      <div class="note warn"><span class="nico">⏱️</span><span>We watch only <b>how</b> you interact — time taken, zoom, retries. Never what you tapped on your bank balance.</span></div>
+      <button class="btn ghost" data-a="ob-next" style="margin-top:auto">Skip this task</button>`;
+  }
+  return `<div><h3>One suggestion</h3>
+      <p class="lede">Based on how you moved through those tasks, <b>voice guidance and larger text</b> may make banking easier for you.</p></div>
+    <div class="card"><p class="eyebrow-s" style="margin-bottom:9px">We are asking, not deciding</p>
+      <p class="lede" style="font-size:.9em">Would you like to turn on Voice Banking?</p></div>
+    <div class="note"><span class="nico">🙅</span><span>We will never tell you what your disability is. This is a preference, and you can switch it off in two taps.</span></div>
+    <button class="btn" data-a="ob-accept">Yes, turn on voice banking</button>
+    <button class="btn ghost" data-a="ob-decline">No thanks, keep it as it is</button>`;
+};
+
+/* ---------- JOURNEY SCREENS ---------- */
+SCREENS.journey = () => {
+  const p = P(), all = steps(), st = all[state.step], j = JOURNEYS[state.journey];
+  const body = journeyBody(st, j);
+  const showProgress = st.k !== 'intro';
+  return (showProgress ? progressBar() : '') + body;
+};
+
+function journeyBody(st, j){
+  const p = P(), f = state.form;
+  const isEdu = j.id === 'edu';
+
+  switch(st.k){
+    case 'intro':
+      return `<div><span class="badge brand">${esc(j.story)}</span>
+        <h3 style="margin-top:9px">${esc(t(isEdu ? 'Study now. Pay later.' : 'Build your own work.', isEdu ? 'Money for your studies' : 'Money for your work'))}</h3></div>
+        ${formatBlock(j.name, isEdu
+          ? t('The bank pays your course fees directly to your institution. You start repaying after your course ends.','The bank pays your college. You pay back later, every month.')
+          : t('Working capital or equipment finance for a small business, with government subsidy where you qualify.','Money to start or grow your work. Government may pay part of it.'))}
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Amount','How much'))}</span><span class="v num">${isEdu?'Up to ₹20,00,000':'Up to ₹10,00,000'}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Repayment starts','Pay back from'))}</span><span class="v">${esc(isEdu?t('After course + 12 months','After you finish'):t('After 6 months','After 6 months'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Collateral','Security'))}</span><span class="v">${esc(t('None up to ₹7.5 lakh','Not needed for small amounts'))}</span></div>
+        </div></div>
+        ${securityNote()}
+        <button class="btn" data-a="next">${esc(t('Check if I qualify','Start →'))}</button>
+        ${saathiInline()}`;
+
+    case 'explain':
+      return formatBlock(st.t, isEdu
+        ? t('Three things decide your loan: your course and institution, the total cost, and who signs with you. Government subsidy can reduce what you repay.','Three things matter: your course, the cost, and one family member who signs.')
+        : t('Your loan depends on your business plan, how much you need, and which government scheme you qualify for. A disability certificate can raise your subsidy.','We look at your work, how much you need, and government help you can get.'))
+        + `<div class="card"><p class="eyebrow-s" style="margin-bottom:9px">${esc(t('What you will need','You will need'))}</p>
+          <div class="check">${(isEdu?['Admission letter','ID and address proof','Fee structure','Co-applicant details']:['Business plan or quotation','ID and address proof','Udyam registration','Bank statement'])
+            .map(d => `<div class="check-item"><span class="box" aria-hidden="true">✓</span><span class="tx"><b>${esc(d)}</b></span></div>`).join('')}</div></div>
+        ${navButtons()}`;
+
+    case 'elig':
+      return `<div><h3>${esc(t('You look eligible','Good news'))}</h3></div>
+        <div class="success" style="padding:6px"><div class="seal" aria-hidden="true">✓</div>
+          <p class="lede">${esc(t('Based on what we already know about you, this loan can proceed to application.','You can apply for this loan.'))}</p></div>
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Age','Age'))}</span><span class="v">${esc(isEdu?'21 ✓':'27 ✓')}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('KYC status','ID papers'))}</span><span class="v">${esc(t('Valid until 2028 ✓','OK ✓'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Disability record (UDID)','Disability card'))}</span><span class="v">${esc(t('On file ✓','On file ✓'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Extra benefit unlocked','You also get'))}</span><span class="v">${esc(isEdu?t('Interest subsidy check','Cheaper loan'):t('PMEGP special category','Government help'))}</span></div>
+        </div></div>
+        <div class="note"><span class="nico">🎁</span><span>${esc(t('Because your UDID is on file, we will check 3 government benefits for you at step 6 — you do not have to search for them.','We will find government money for you. You do not have to search.'))}</span></div>
+        ${navButtons()}`;
+
+    case 'course': case 'course2': case 'course3': {
+      const one = P().oneTask;
+      const field = (id,label,val,hint) => `<div class="field"><label for="${id}">${esc(label)}</label>
+        <input id="${id}" value="${esc(val)}" ${P().audio?`data-a="say" data-v="${esc(label+': '+val)}"`:''}>
+        ${hint?`<span class="hint">${esc(hint)}</span>`:''}</div>`;
+      let inner = '';
+      if(!one) inner = field('f-course', t('Course','What are you studying?'), state.form.course)
+        + field('f-inst', t('Institution','College name'), state.form.institution)
+        + field('f-dur', t('Duration','How long'), state.form.years)
+        + field('f-fees', t('Total fees','Total cost'), state.form.fees);
+      else if(st.k === 'course') inner = field('f-course', t('What course are you studying?','What are you studying?'), state.form.course, t('Degree, diploma or certificate','Write your course name'));
+      else if(st.k === 'course2') inner = field('f-inst', t('Which institution?','Which college?'), state.form.institution);
+      else inner = field('f-fees', t('Total course fees','How much does it cost?'), state.form.fees, t('You can find this on your admission letter','Look at your admission letter'));
+      return `<div><h3>${esc(st.sub ? t(st.sub, st.sub) : t('Tell us about your course','Your course'))}</h3></div>
+        ${P().audio ? `<div class="note"><span class="nico">🔊</span><span>${esc('Voice entry is on. Say your answer, or type it.')}</span></div>`:''}
+        <div style="display:flex;flex-direction:column;gap:14px">${inner}</div>
+        ${navButtons()}`;
+    }
+
+    case 'idea': case 'stage': {
+      const opts = st.k === 'idea'
+        ? [['Screen-printing unit','Printing on cloth and paper'],['Mobile repair shop','Phone repairs'],['Tailoring unit','Stitching clothes'],['Food stall','Selling food']]
+        : [['New business','I have not started yet'],['Existing business','Running for 1–3 years'],['Expanding','I want to grow']];
+      return `<div><h3>${esc(t(st.t, st.e))}</h3>
+        <p class="meta">${esc(t('Pick the closest option. You can describe it in detail later.','Choose one.'))}</p></div>
+        <div class="rows">${opts.map((o,i) => `
+          <button class="row-btn" data-a="pick-next" data-v="${esc(o[0])}" ${i===0?'style="border-color:var(--brand);background:var(--brand-soft)"':''}>
+            <span class="tx"><b>${esc(o[0])}</b><span>${esc(o[1])}</span></span>
+            <span class="chev" aria-hidden="true">${i===0?'✓':'›'}</span></button>`).join('')}</div>
+        ${navButtons()}`;
+    }
+
+    case 'amount': {
+      const val = isEdu ? state.form.amount : state.form.bizAmount;
+      // no drag interaction anywhere: steppers work for every motor profile
+      return `<div><h3>${esc(t('How much do you need?','How much money?'))}</h3>
+        <p class="meta">${esc(t('Use the buttons — no sliding or dragging anywhere in this app.','Tap plus or minus.'))}</p></div>
+        <div class="card" style="text-align:center">
+          <p class="eyebrow-s">${esc(t('Loan amount','Money'))}</p>
+          <p class="num" style="font-size:1.9em;font-weight:700;margin:6px 0 12px">${esc(money(val))}</p>
+          <div class="stepper">
+            <button data-a="amt-down" aria-label="${esc(t('Reduce by ₹50,000','Less'))}">−</button>
+            <span class="val num">${esc(money(val))}</span>
+            <button data-a="amt-up" aria-label="${esc(t('Increase by ₹50,000','More'))}">+</button>
+          </div>
+        </div>
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Estimated EMI','Monthly payment'))}</span><span class="v num">${esc(money(Math.round(val/84)))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Over','For'))}</span><span class="v">${esc(t('7 years','7 years'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Indicative rate','Interest'))}</span><span class="v num">${isEdu?'8.55%':'9.10%'}</span></div>
+        </div></div>
+        <p class="footnote">${esc(t('Indicative only. Your final rate is confirmed at sanction.','This is an estimate.'))}</p>
+        ${navButtons()}`;
+    }
+
+    case 'benefit': {
+      const picks = isEdu ? ['post-matric','top-class','adip'] : ['pmegp','nhfdc','pm-daksh'];
+      return `<div><h3>${esc(t('We found 3 benefits for you','Free government money'))}</h3>
+        <p class="meta">${esc(t('Checked against your age, course and disability record — no searching required.','You do not have to look for these.'))}</p></div>
+        <div class="rows">${picks.map(id => {
+          const s = SCHEMES.find(x => x.id === id);
+          return `<button class="row-btn" data-a="scheme" data-v="${s.id}" style="border-color:var(--good)">
+            <span class="ico" style="background:var(--good-soft)" aria-hidden="true">🎁</span>
+            <span class="tx"><b>${esc(s.name)}</b><span>${esc(s.benefit)}</span></span>
+            <span class="chev" aria-hidden="true">›</span></button>`;}).join('')}</div>
+        <div class="note"><span class="nico">💡</span><span>${esc(t('Applying for these does not slow your loan. Both run in parallel.','You can get both at the same time.'))}</span></div>
+        ${navButtons()}`;
+    }
+
+    case 'docs': {
+      const docs = isEdu
+        ? ['Admission letter','Fee structure','Aadhaar / ID proof','Address proof','Disability certificate (UDID)','Co-applicant income proof']
+        : ['Business plan or quotation','Aadhaar / ID proof','Address proof','Udyam registration','Disability certificate (UDID)','6-month bank statement'];
+      return `<div><h3>${esc(t('Six documents','You need 6 papers'))}</h3>
+        <p class="meta">${esc(t('Tap each one to hear what it is and where to get it.','Tap to know more.'))}</p></div>
+        <div class="check">${docs.map((d,i) => `
+          <button class="check-item ${state.done.docs[d]?'done':''}" data-a="toggle-doc" data-v="${esc(d)}">
+            <span class="box" aria-hidden="true">✓</span>
+            <span class="tx"><b>${esc(d)}</b><span>${esc(state.done.docs[d]?t('Ready','Done'):t('Tap when you have it','Tap when ready'))}</span></span>
+          </button>`).join('')}</div>
+        ${P().isl ? `<div class="isl-panel"><div class="isl-stage"><span class="hands">🤟</span><b>ISL: what each document is</b><small>4 min · with captions</small></div></div>`:''}
+        ${navButtons()}`;
+    }
+
+    case 'you': case 'you2': {
+      const one = P().oneTask;
+      let inner = '';
+      const field = (id,l,v,h) => `<div class="field"><label for="${id}">${esc(l)}</label><input id="${id}" value="${esc(v)}">${h?`<span class="hint">${esc(h)}</span>`:''}</div>`;
+      if(!one) inner = field('f-nm', t('Full name','Your name'), 'Priya Sharma') + field('f-ph', t('Mobile number','Phone number'), '+91 98••• ••432')
+        + field('f-em', t('Email','Email'), 'priya.s@email.in');
+      else if(st.k === 'you') inner = field('f-nm', t('What is your full name?','Your name'), 'Priya Sharma');
+      else inner = field('f-ph', t('Your mobile number','Your phone number'), '+91 98••• ••432', t('We send your OTP here','We will message you here'));
+      return `<div><h3>${esc(st.sub ? t(st.sub, st.sub) : t('Your details','About you'))}</h3>
+        <p class="meta">${esc(t('Pre-filled from your existing BOB record. Correct anything that changed.','We already know this. Change it if wrong.'))}</p></div>
+        <div style="display:flex;flex-direction:column;gap:14px">${inner}</div>
+        ${navButtons()}`;
+    }
+
+    case 'co':
+      return `<div><h3>${esc(t('One co-applicant','One family member'))}</h3>
+        <p class="meta">${esc(t('For loans above ₹7.5 lakh a parent or guardian co-signs. Below that, it is optional.','Someone in your family signs with you.'))}</p></div>
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Name','Name'))}</span><span class="v">${esc(state.form.coName)}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Relationship','Who'))}</span><span class="v">${esc(t('Mother','Mother'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('KYC','ID papers'))}</span><span class="v"><span class="badge good">${esc(t('Already with BOB','Done'))}</span></span></div>
+        </div></div>
+        <div class="note human"><span class="nico">🛡️</span><span>${esc(t('Your co-applicant sees only the co-applicant section — not your balance, transactions or benefit applications.','Your family member cannot see your money.'))}</span></div>
+        ${navButtons()}`;
+
+    case 'udyam':
+      return `<div><h3>${esc(t('Udyam registration','Register your work'))}</h3></div>
+        ${formatBlock('Udyam', t('Udyam is the free government registration that makes your business an official MSME. It unlocks subsidy and cheaper credit — and takes about 10 minutes with your Aadhaar.','Udyam makes your work official. It is free. You get cheaper loans.'))}
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Your status','Now'))}</span><span class="v"><span class="badge warn">${esc(t('Not registered','Not done'))}</span></span></div>
+          <div class="kv-row"><span class="k">${esc(t('Cost','Cost'))}</span><span class="v">${esc(t('Free','Free'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Time','Time'))}</span><span class="v">${esc(t('~10 minutes','10 minutes'))}</span></div>
+        </div></div>
+        <button class="btn ghost" data-a="say" data-v="We will guide you through Udyam registration step by step.">${esc(t('Do it with guidance now','Help me do it'))}</button>
+        <div class="note"><span class="nico">↩️</span><span>${esc(t('You can continue the loan and finish Udyam later — your application is saved.','You can do this later. We saved your work.'))}</span></div>
+        ${navButtons()}`;
+
+    case 'upload': {
+      const items = isEdu ? ['Admission letter','Fee structure','Aadhaar','Disability certificate'] : ['Business plan','Aadhaar','Udyam certificate','Bank statement'];
+      return `<div><h3>${esc(t('Upload your documents','Send your papers'))}</h3>
+        <p class="meta">${esc(P().audio ? t('Camera guidance is on: the app tells you when the document is inside the frame and in focus.','The phone will tell you when the picture is good.')
+          : t('Photo or PDF. We check each one before you submit.','Take a photo of each paper.'))}</p></div>
+        ${P().audio ? `<div class="audio-panel"><button class="play" data-a="say" data-v="Move the paper slightly left. Hold steady. Captured — the document is clear." aria-label="Hear camera guidance">▶</button>
+          <div class="tx"><b>${esc(t('Guided camera','Camera helps you'))}</b><span>${esc(t('"Hold steady — captured."','It tells you what to do.'))}</span></div></div>`:''}
+        <div class="check">${items.map((d,i) => `
+          <button class="check-item ${i<2||state.done.upload[d]?'done':''}" data-a="toggle-up" data-v="${esc(d)}">
+            <span class="box" aria-hidden="true">✓</span>
+            <span class="tx"><b>${esc(d)}</b><span>${esc(i<2||state.done.upload[d]?t('Uploaded · checked','Sent'):t('Tap to upload','Tap to send'))}</span></span>
+          </button>`).join('')}</div>
+        <div class="note warn"><span class="nico">⚠️</span><span>${esc(t('Poor network? Documents queue and upload themselves when you reconnect. Nothing is lost.','Slow internet is fine. We will send it later by ourselves.'))}</span></div>
+        ${navButtons()}`;
+    }
+
+    case 'kyc':
+      return `<div><h3>${esc(t('Confirm it is you','Prove it is you'))}</h3></div>
+        ${formatBlock('KYC', t('Choose the method that works for you. Every option is equally valid — none of them is a "reduced" service.','Choose one way. All of them are fine.'))}
+        <div class="rows">
+          ${[['Aadhaar OTP','📲',t('Code to your phone','A code on your phone')],
+             ['Video KYC with ISL interpreter','🤟',t('Officer signs in ISL','Someone signs to you')],
+             ['Thumb impression','👍',t('Accepted in place of a signature','You can use your thumb')],
+             ['Branch visit, pre-booked','🏦',t('Pick a slot and a trained officer','Meet a person')]].map(([l,i,s],idx) => `
+            <button class="row-btn" data-a="pick-kyc" data-v="${esc(l)}" ${idx === (P().isl?1:P().visualSupport==='braille / tactile'?2:0) ? 'style="border-color:var(--brand);background:var(--brand-soft)"':''}>
+              <span class="ico" aria-hidden="true">${i}</span>
+              <span class="tx"><b>${esc(l)}</b><span>${esc(s)}</span></span>
+              <span class="chev" aria-hidden="true">${idx === (P().isl?1:P().visualSupport==='braille / tactile'?2:0)?'✓':'›'}</span></button>`).join('')}
+        </div>
+        ${securityNote()}
+        ${navButtons()}`;
+
+    case 'review': {
+      const rows = isEdu
+        ? [['Course',state.form.course],['Institution',state.form.institution],['Loan amount',money(state.form.amount)],['Co-applicant',state.form.coName],['Documents','4 of 4 uploaded'],['Benefits applied','2 schemes']]
+        : [['Business',state.form.business],['Purpose',state.form.purpose],['Loan amount',money(state.form.bizAmount)],['Udyam','Pending — can finish later'],['Documents','4 of 4 uploaded'],['Subsidy','PMEGP special category']];
+      return `<div><h3>${esc(t('Check before you send','Is everything right?'))}</h3>
+        <p class="meta">${esc(t('Tap any line to change it. Nothing is submitted yet.','You can still change anything.'))}</p></div>
+        <div class="card"><div class="kv">${rows.map(([k,v]) => `
+          <div class="kv-row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}</div></div>
+        ${P().audio ? `<button class="btn ghost" data-a="say" data-v="${esc(rows.map(r=>r[0]+': '+r[1]).join('. '))}">🔊 ${esc(t('Read the whole application back to me','Read it to me'))}</button>`:''}
+        ${P().simplifiedFlow ? `<div class="note warn"><span class="nico">🛑</span><span>${esc(t('The next step sends your application. You cannot undo it — but you can withdraw it later.','Next you send it. You can stop it later if you want.'))}</span></div>`:''}
+        ${navButtons(t('Continue to submit','Send it →'))}`;
+    }
+
+    case 'submit':
+      return `<div><h3>${esc(t('Confirm and submit','Send your application'))}</h3></div>
+        <div class="card">
+          <p class="eyebrow-s" style="margin-bottom:10px">${esc(t('Enter the OTP sent to +91 98••• ••432','Type the code from your phone'))}</p>
+          <div class="field"><label for="f-otp" class="vh">OTP</label>
+            <input id="f-otp" inputmode="numeric" placeholder="• • • •" style="letter-spacing:.5em;text-align:center;font-size:1.3em">
+            <span class="hint">${esc('Demo prototype — any four digits work. No real OTP is sent.')}</span></div>
+        </div>
+        ${securityNote()}
+        <div class="note human"><span class="nico">🤝</span><span>${esc(t('Your SAATHI is on the line and can hear you — but this field is hidden from their screen. They will say "tell me when you have entered it", never "read it out to me".','The helper cannot see this box.'))}</span></div>
+        <button class="btn" data-a="next">${esc(t('Submit application','Send'))}</button>`;
+
+    case 'track':
+      return `<div class="success"><div class="seal" aria-hidden="true">✓</div>
+        <h3>${esc(t('Application submitted','We got it!'))}</h3>
+        <p class="lede">${esc(t('Reference ' + (isEdu?'EDU-2026-44817':'MSME-2026-10932') + '. You will get an update at every stage.','We will tell you what happens.'))}</p></div>
+        ${P().audio ? `<div class="audio-panel"><button class="play" data-a="say" data-v="Application submitted. Your reference number is ${isEdu?'E D U 2026 44817':'M S M E 2026 10932'}. We will call you at each stage." aria-label="Hear confirmation">▶</button>
+          <div class="tx"><b>${esc(t('Spoken confirmation','Listen'))}</b><span>${esc(t('Reference read digit by digit','We say the number slowly'))}</span></div></div>` : ''}
+        ${P().captions ? `<div class="caption">${esc(t('Confirmation: application submitted. Reference ' + (isEdu?'EDU-2026-44817':'MSME-2026-10932') + '.','You sent it. We have it.'))}</div>`:''}
+        <div class="card"><div class="track">
+          ${[[t('Submitted','Sent'),'Today, 9:41 am','done'],
+             [t('Document verification','Checking papers'),t('1–2 working days','1 or 2 days'),'now'],
+             [t('Credit assessment','Checking'),t('3–4 working days','3 or 4 days'),''],
+             [t('Sanction','Yes or no'),t('Approx. 7 days','About 7 days'),''],
+             [t('Disbursement','Money sent'),t('On admission confirmation','When you confirm'),'']]
+            .map(([b,s,cls],i,arr) => `
+            <div class="track-step ${cls}"><div class="rail"><div class="dot num">${cls==='done'?'✓':i+1}</div>${i<arr.length-1?'<div class="line"></div>':''}</div>
+            <div class="bd"><b>${esc(b)}</b><span>${esc(s)}</span></div></div>`).join('')}
+        </div></div>
+        <div class="note"><span class="nico">🔔</span><span>${esc(P().captions && !P().audio
+          ? t('Updates arrive as text and a flashing visual alert — never as a phone call you cannot take.','We will send you a message, not a phone call.')
+          : t('Updates arrive as a spoken call-back and a text message.','We will call and message you.'))}</span></div>
+        ${saathiInline()}
+        ${navButtons(t('See sanction status','What happened?'))}`;
+
+    case 'sanction':
+      return `<div class="success"><div class="seal" aria-hidden="true">🎉</div>
+        <h3>${esc(t('Sanctioned','Your loan is approved!'))}</h3>
+        <p class="lede">${esc(t(money(isEdu?state.form.amount:state.form.bizAmount) + ' approved at ' + (isEdu?'8.55%':'9.10%') + ' p.a.', 'You will get ' + money(isEdu?state.form.amount:state.form.bizAmount) + '.'))}</p></div>
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Sanctioned amount','Money'))}</span><span class="v num">${esc(money(isEdu?state.form.amount:state.form.bizAmount))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Rate','Interest'))}</span><span class="v num">${isEdu?'8.55%':'9.10%'}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Subsidy applied','Government paid'))}</span><span class="v">${esc(isEdu?t('Interest subsidy under review','Being checked'):t('PMEGP 35% margin money','Government pays part'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('First EMI','First payment'))}</span><span class="v">${esc(isEdu?t('After course + 12 months','Later'):t('After 6 months','After 6 months'))}</span></div>
+        </div></div>
+        <div class="note"><span class="nico">📄</span><span>${esc(t('Your sanction letter is available as a tagged, screen-reader-readable PDF — not a scanned image.','The letter can be read aloud by your phone.'))}</span></div>
+        ${navButtons(t('Accept and continue','Yes, I want it'))}`;
+
+    case 'disburse':
+      return `<div class="success"><div class="seal" aria-hidden="true">💸</div>
+        <h3>${esc(t('Money on the way','Money sent'))}</h3>
+        <p class="lede">${esc(isEdu
+          ? t('First instalment of ₹1,20,000 sent directly to NIT Warangal. Your next instalment releases each semester.','We sent the money to your college.')
+          : t('₹6,00,000 credited to your current account ••3421 today.','The money is in your account now.'))}</p></div>
+        ${P().audio ? `<div class="audio-panel"><button class="play" data-a="say" data-v="${esc(isEdu?'One lakh twenty thousand rupees sent to your institution today.':'Six lakh rupees credited to your current account today.')}" aria-label="Hear confirmation">▶</button>
+          <div class="tx"><b>${esc(t('Spoken confirmation','Listen'))}</b><span>${esc(t('Amounts read in words, not just digits','We say it clearly'))}</span></div></div>`:''}
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('Journey','You did'))}</span><span class="v">${esc(t('Completed independently','All by yourself'))}</span></div>
+          <div class="kv-row"><span class="k">${esc(t('SAATHI used','Helper used'))}</span><span class="v">${esc(state.agent ? t('Yes, at document upload','Yes, once') : t('Not needed','No'))}</span></div>
+        </div></div>
+        <button class="btn" data-a="tab" data-v="home">${esc(t('Back to home','Home'))}</button>`;
+
+    /* -------- transfer journey -------- */
+    case 'from':
+      return `<div><h3>${esc(t('Pay from','Which account?'))}</h3></div>
+        <div class="rows"><button class="row-btn" data-a="next" style="border-color:var(--brand);background:var(--brand-soft)">
+          <span class="ico" aria-hidden="true">👛</span>
+          <span class="tx"><b>${esc(t('Savings ••3421','My account'))}</b><span class="num">${esc(t('Balance ₹18,450','₹18,450'))}</span></span>
+          <span class="chev" aria-hidden="true">✓</span></button></div>
+        ${navButtons()}`;
+    case 'to':
+      return `<div><h3>${esc(t('Pay to','Who gets it?'))}</h3></div>
+        <div class="rows">${[['Rahul Verma','rahul@bobupi'],['Mother','9812•••432'],['Hostel mess','mess.nitw@upi']].map((r,i) => `
+          <button class="row-btn" data-a="next" ${i===0?'style="border-color:var(--brand);background:var(--brand-soft)"':''}>
+            <span class="ico" aria-hidden="true">👤</span>
+            <span class="tx"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></span>
+            <span class="chev" aria-hidden="true">${i===0?'✓':'›'}</span></button>`).join('')}</div>
+        ${navButtons()}`;
+    case 'amt':
+      return `<div><h3>${esc(t('How much?','How much money?'))}</h3></div>
+        <div class="card" style="text-align:center">
+          <p class="num" style="font-size:2em;font-weight:700;margin:4px 0 12px">${esc(money(state.form.xferAmount))}</p>
+          <div class="stepper">
+            <button data-a="x-down" aria-label="Less">−</button>
+            <span class="val num">${esc(money(state.form.xferAmount))}</span>
+            <button data-a="x-up" aria-label="More">+</button></div>
+        </div>
+        <div class="chips">${[500,1000,2500].map(v => `<button class="chip" data-a="x-set" data-v="${v}">${esc(money(v))}</button>`).join('')}</div>
+        ${navButtons()}`;
+    case 'review2': return '';
+    case 'auth':
+      return `<div><h3>${esc(t('Enter your UPI PIN','Type your secret number'))}</h3></div>
+        <div class="card"><div class="field"><label for="f-pin" class="vh">UPI PIN</label>
+          <input id="f-pin" inputmode="numeric" placeholder="• • • •" style="letter-spacing:.5em;text-align:center;font-size:1.3em">
+          <span class="hint">${esc('Demo prototype — no real PIN, no real money.')}</span></div></div>
+        ${securityNote()}
+        ${P().audio ? `<div class="note"><span class="nico">🔇</span><span>${esc('Screen reader speaks "digit entered", never the digit itself — safe to use in public.')}</span></div>`:''}
+        <button class="btn" data-a="next">${esc(t('Pay ' + money(state.form.xferAmount), 'Send money'))}</button>`;
+    case 'done':
+      return `<div class="success"><div class="seal" aria-hidden="true">✓</div>
+        <h3>${esc(t(money(state.form.xferAmount) + ' sent','Money sent!'))}</h3>
+        <p class="lede">${esc(t('To Rahul Verma · UPI · now','To Rahul'))}</p></div>
+        ${P().audio ? `<div class="audio-panel"><button class="play" data-a="say" data-v="Two thousand five hundred rupees sent to Rahul Verma. Your balance is fifteen thousand nine hundred and fifty rupees." aria-label="Hear confirmation">▶</button>
+          <div class="tx"><b>${esc('Spoken confirmation')}</b><span>${esc('Amount and new balance, in words')}</span></div></div>`:''}
+        ${P().captions ? `<div class="caption">${esc('Paid ' + money(state.form.xferAmount) + ' to Rahul Verma. New balance ₹15,950.')}</div>`:''}
+        <div class="card"><div class="kv">
+          <div class="kv-row"><span class="k">${esc(t('New balance','Money left'))}</span><span class="v num">₹15,950</span></div>
+          <div class="kv-row"><span class="k">${esc(t('Reference','Number'))}</span><span class="v num">4471 0092 8831</span></div>
+        </div></div>
+        <button class="btn" data-a="tab" data-v="home">${esc(t('Done','Finish'))}</button>`;
+
+    default:
+      return `<div><h3>${esc(t(st.t, st.e))}</h3><p class="lede">${esc(t('This step is part of the prototype flow.','Next step.'))}</p></div>${navButtons()}`;
+  }
+}
+
+/* ---------- lightweight quick flows ---------- */
+function quickSheet(kind){
+  const p = P();
+  const map = {
+    balance:{i:'👛', h:t('Savings ••3421','Your money'), b:t('Available balance ₹18,450','You have ₹18,450'),
+             say:'Your savings account balance is eighteen thousand four hundred and fifty rupees.'},
+    fd:{i:'🏦', h:t('Open a fixed deposit','Save money'), b:t('₹25,000 for 12 months earns about ₹1,775 interest.','Put ₹25,000 for 1 year. You get ₹1,775 extra.'),
+        say:'Twenty five thousand rupees for twelve months earns about one thousand seven hundred and seventy five rupees.'},
+    block:{i:'🛑', h:t('Block your card','Stop your card'), b:t('Debit card ••7702 will stop working immediately. A replacement is ordered in the same step.','Your card will stop now. We will send a new one.'),
+           say:'Your debit card ending seven seven zero two will be blocked immediately.'},
+    kyc:{i:'🪪', h:t('Update KYC','Update ID'), b:t('Your KYC is valid until March 2028. You can still update your address.','Your papers are fine until 2028.'),
+         say:'Your K Y C is valid until March two thousand twenty eight.'},
+    nom:{i:'👪', h:t('Add a nominee','Choose a person'), b:t('No nominee on file. Adding one takes about 3 minutes.','Nobody chosen yet. It takes 3 minutes.'),
+         say:'You have not added a nominee yet.'},
+    sip:{i:'📊', h:t('Start a SIP','Save monthly'), b:t('From ₹500 a month. You can pause or stop any time, in two taps.','₹500 every month. Stop any time.'),
+         say:'You can start a systematic investment plan from five hundred rupees a month.'}
+  };
+  const m = map[kind];
+  announce(m.say);
+  return `<div class="sheet-grab"></div>
+    <h3>${m.i} ${esc(m.h)}</h3>
+    ${formatBlock(m.h, m.b)}
+    ${kind === 'block' ? `<div class="note warn"><span class="nico">🛑</span><span>${esc(t('This cannot be undone. Your card stops working the moment you confirm.','You cannot undo this.'))}</span></div>` : ''}
+    <div class="btn-row"><button class="btn ghost" data-a="close-sheet" style="flex:0 0 38%">${esc(t('Close','Close'))}</button>
+      <button class="btn" data-a="close-sheet">${esc(t('Continue','OK'))}</button></div>`;
+}
+
+/* ---------- SAATHI sheet ---------- */
+function saathiSheet(){
+  const p = P();
+  const ctx = currentContext();
+  return `<div class="sheet-grab"></div>
+    <h3>🤝 ${esc(t('How would you like help?','How can we help?'))}</h3>
+    <p class="meta">${esc(t('Your SAATHI already knows where you are — you will not repeat yourself.','We know what you are doing now.'))}</p>
+    <div class="card" style="background:var(--human-soft);border-color:var(--human)">
+      <p class="eyebrow-s" style="margin-bottom:7px">${esc(t('They will see','They know'))}</p>
+      <div class="kv">
+        <div class="kv-row"><span class="k">${esc(t('You are on','Now'))}</span><span class="v">${esc(ctx.where)}</span></div>
+        <div class="kv-row"><span class="k">${esc(t('Stage','Step'))}</span><span class="v">${esc(ctx.stage)}</span></div>
+        <div class="kv-row"><span class="k">${esc(t('Preference','How you bank'))}</span><span class="v">${esc(p.communicationMode)}</span></div>
+        <div class="kv-row"><span class="k">${esc(t('Language','Language'))}</span><span class="v">${esc(p.preferredLanguage)}</span></div>
+      </div>
+    </div>
+    <div class="rows">${p.channels.map((c,i) => {
+      const ch = CHANNELS[c];
+      return `<button class="row-btn" data-a="connect" data-v="${c}" ${i===0?'style="border-color:var(--human);background:var(--human-soft)"':''}>
+        <span class="ico" style="background:var(--human-soft)" aria-hidden="true">${ch.icon}</span>
+        <span class="tx"><b>${esc(ch.label)}</b><span>${esc(ch.sub)}</span></span>
+        <span class="chev" aria-hidden="true">${i===0?'★':'›'}</span></button>`;}).join('')}</div>
+    ${securityNote()}
+    <button class="btn ghost" data-a="close-sheet">${esc(t('Not now','Close'))}</button>`;
+}
+
+function currentContext(){
+  if(state.screen === 'journey'){
+    const j = JOURNEYS[state.journey], all = steps(), st = all[state.step];
+    return {where:j.name, stage:`${st.t} — step ${state.step+1} of ${all.length}`, journey:j.name, stepName:st.t};
+  }
+  if(state.screen === 'process'){ const pr = PROCESSES.find(x=>x.id===state.processId); return {where:'Learn how', stage:pr.title, journey:'Process library', stepName:pr.title}; }
+  if(state.screen === 'scheme'){ const s = SCHEMES.find(x=>x.id===state.schemeId); return {where:'Benefits', stage:s.name, journey:'Benefits', stepName:s.name}; }
+  return {where:'Home', stage:'Browsing', journey:'Home', stepName:'Home'};
+}
+
+/* ============================================================
+   9. AGENT CONSOLE
+   ============================================================ */
+function renderAgent(){
+  const host = $('agent');
+  if(!state.agent){
+    host.innerHTML = `<p class="agent-idle">No SAATHI session. Tap <b>Talk to my SAATHI</b> inside the app — the officer's screen appears here, already filled in.</p>`;
+    return;
+  }
+  const p = PROFILES[state.agent.profile], ch = CHANNELS[state.agent.channel], c = state.agent.ctx;
+  host.innerHTML = `<div class="agent-live">
+    <div class="agent-hero"><div class="av" aria-hidden="true">${ch.icon}</div>
+      <div><b>${esc(ch.label)} · connected</b><span>Officer: R. Iyer · ${esc(p.preferredLanguage)} ${state.agent.channel==='isl'?'· ISL certified':''}</span></div></div>
+    <div class="ctx">
+      <div class="ctx-row hot"><span class="k">Customer is on</span><span class="v">${esc(c.where)}</span></div>
+      <div class="ctx-row hot"><span class="k">Current stage</span><span class="v">${esc(c.stage)}</span></div>
+      <div class="ctx-row"><span class="k">Accessibility preference</span><span class="v">${esc(p.communicationMode)}</span></div>
+      <div class="ctx-row"><span class="k">Language</span><span class="v">${esc(p.preferredLanguage)}</span></div>
+      <div class="ctx-row"><span class="k">Assistance mode</span><span class="v">${esc(p.humanAssistance)}</span></div>
+    </div>
+    <div class="agent-block"><h4>Opening line, pre-written</h4>
+      <p style="margin:0;font-size:12.3px;color:var(--t-2)">"${esc(openingLine(c, p))}"</p></div>
+    <div class="agent-block"><h4>Officer can do</h4>
+      <ul><li>Explain the current step</li><li>Read out what is on screen</li><li>Flag a document as unclear</li><li>Book a branch slot</li></ul></div>
+    <div class="agent-block"><h4>Officer can never see or do</h4>
+      <ul><li class="locked">OTP · UPI PIN · password</li><li class="locked">Authorise a payment or submission</li><li class="locked">Full account number or balance history</li></ul></div>
+    <button class="btn sm ghost" data-a="end-agent" style="width:100%">End session</button>
+  </div>`;
+}
+function openingLine(c, p){
+  if(p.id === 'deaf') return 'नमस्ते प्रिया — मैं देख सकता हूँ आप एजुकेशन लोन में हैं। क्या हम दस्तावेज़ वाले हिस्से से शुरू करें?';
+  if(p.id === 'deafblind') return 'Hello Sunil. I can see you are at ' + c.stage + '. I will type in short lines. Tell me when to continue.';
+  if(p.id === 'cognitive') return 'Hi Anjali. You are on ' + c.stage + '. We will do one thing at a time. Ready?';
+  return 'Hello — I can see you are at ' + c.stage + '. Shall we start there?';
+}
+
+/* ============================================================
+   10. CONSOLE: profiles, log, demos, verdict
+   ============================================================ */
+function renderProfiles(){
+  $('profList').innerHTML = PROFILE_ORDER.map(k => {
+    const p = PROFILES[k];
+    return `<button class="prof" data-p="${k}" aria-pressed="${state.profile===k}">
+      <span class="pe" aria-hidden="true">${p.emoji}</span>
+      <span><strong>${esc(p.label)}</strong><span>${esc(p.who)}</span></span></button>`;
+  }).join('');
+}
+
+const LOG_FIELDS = [
+  ['textSize','Text scale', v => v.toFixed(2) + '×'],
+  ['tap','Touch target', v => v + ' px'],
+  ['contrast','Contrast', v => v === 'high' ? 'High (amber on black)' : 'Brand'],
+  ['cols','Layout', v => v === 1 ? 'Single column, sequential' : 'Two-column tiles'],
+  ['face','Typeface', v => v === 'hyper' ? 'Atkinson Hyperlegible throughout' : 'Bricolage + Atkinson'],
+  ['audio','Speech output', v => v ? 'On' : 'Off'],
+  ['captions','Captions', v => v ? 'On' : 'Off'],
+  ['isl','ISL content', v => v ? 'Shown first' : 'Hidden'],
+  ['simplifiedFlow','Flow', v => v ? 'Simplified, fewer choices' : 'Standard'],
+  ['oneTask','Steps', v => v ? 'One question per screen' : 'Grouped fields'],
+  ['defaultChannel','SAATHI channel', v => CHANNELS[v].label],
+  ['humanAssistance','Assistance', v => v]
+];
+function renderLog(){
+  const host = $('log');
+  if(!state.prevProfile){
+    host.innerHTML = `<p class="log-empty">Switch a profile to see exactly what the experience layer changes. Nothing here is cosmetic.</p>`;
+    return;
+  }
+  const a = PROFILES[state.prevProfile], b = P();
+  const rows = LOG_FIELDS.filter(([k]) => a[k] !== b[k]).map(([k,label,fmt]) =>
+    `<div class="log-row"><span class="log-k">${esc(label)}</span>
+      <span class="log-v"><span class="was">${esc(fmt(a[k]))}</span><span class="arw">→</span>${esc(fmt(b[k]))}</span></div>`).join('');
+  host.innerHTML = rows || `<p class="log-empty">No adaptation differences between these two profiles.</p>`;
+}
+
+const DEMOS = [
+  {n:'01', p:'blind', go:()=>{state.screen='home';}, tx:'<em>Blind, 21</em> — check balance, send money, hear spoken confirmation.'},
+  {n:'02', p:'deaf', go:()=>{state.screen='process'; state.processId='kyc';}, tx:'<em>Deaf, 20</em> — learn KYC in ISL, then start it.'},
+  {n:'03', p:'blind', go:()=>{state.screen='journey'; state.journey='edu'; state.step=0;}, tx:'<em>Blind, 22</em> — education loan, voice-assisted, end to end.'},
+  {n:'04', p:'deaf', go:()=>{state.screen='journey'; state.journey='msme'; state.step=0;}, tx:'<em>Deaf, 27</em> — MSME loan with ISL explainers.'},
+  {n:'05', p:'cognitive', go:()=>{state.screen='journey'; state.journey='edu'; state.step=3;}, tx:'<em>Simplified</em> — one question per screen, easy words.'},
+  {n:'06', p:'blind', go:()=>{state.screen='journey'; state.journey='edu'; state.step=9;}, tx:'<em>The key demo</em> — stop here, then switch Blind → Deaf → Simplified. Same step, three experiences.'},
+  {n:'07', p:'standard', go:()=>{state.screen='onboard'; state.onboardStep=0; state.onboardPicks=[];}, tx:'<em>New customer</em> — preference setup that never names a disability.'}
+];
+function renderDemos(){
+  $('demos').innerHTML = DEMOS.map((d,i) =>
+    `<button class="demo" data-d="${i}"><b>${d.n}</b><span>${d.tx}</span></button>`).join('');
+}
+
+const VERDICT = [
+  ['Discover','●','Scheme and loan discovery is fully self-serve in every profile.'],
+  ['Understand','●','Format follows preference — ISL, audio, easy words.'],
+  ['Apply','●','No step requires sighted or hearing assistance.'],
+  ['Authenticate','●','OTP, PIN and thumb impression all stay with the customer.'],
+  ['Documents','◑','Deafblind profile: a first-time braille-display user may need relay help to frame a camera capture.'],
+  ['Submit','●','Confirmation is spoken, captioned and visual — never one channel alone.'],
+  ['Track','●','Updates arrive in the customer\'s own channel.'],
+  ['Recover','◑','A rejected document or a failed video KYC is where every profile still wants a person. SAATHI, by design.']
+];
+function renderVerdict(){
+  $('verdict').innerHTML = VERDICT.map(([s,d,w]) =>
+    `<tr><td>${esc(s)}</td><td class="${d==='●'?'dotok':'dothelp'}">${d}</td><td style="color:var(--t-2)">${esc(w)}</td></tr>`).join('');
+}
+
+/* ============================================================
+   11. RENDER + EVENTS
+   ============================================================ */
+function render(){
+  applyProfileChrome();
+  renderAppbar();
+  const fn = SCREENS[state.screen] || SCREENS.home;
+  $('screen').innerHTML = fn();
+  renderTabs();
+  renderAssistBar();
+  renderSheet();
+  renderAgent();
+  renderProfiles();
+  renderLog();
+}
+function renderSheet(){
+  const host = $('sheetHost');
+  if(!state.sheet){ host.innerHTML = ''; return; }
+  const inner = state.sheet === 'saathi' ? saathiSheet() : quickSheet(state.sheet);
+  host.innerHTML = `<div class="sheet-scrim" data-a="close-sheet"><div class="sheet" role="dialog" aria-modal="true" data-stop="1">${inner}</div></div>`;
+}
+
+function setProfile(id){
+  if(id === state.profile) return;
+  state.prevProfile = state.profile;
+  state.profile = id;
+  render();
+  const p = P();
+  const where = state.screen === 'journey' ? `${JOURNEYS[state.journey].name}, step ${state.step+1}` : 'this screen';
+  toast(`Same ${where} — now ${p.label.toLowerCase()}`);
+  announce(`Profile changed to ${p.label}. You are still on ${where}.`);
+  if(state.agent){ state.agent.profile = id; state.agent.channel = p.defaultChannel; renderAgent(); }
+}
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  state.sheet = null;
+  render();
+  $('screen').scrollTop = 0;
+  const heading = $('screen').querySelector('h3');
+  announce(heading ? heading.textContent : '');
+}
+
+function nextStep(){
+  const all = steps();
+  if(state.step < all.length - 1){
+    state.step++;
+    render();
+    $('screen').scrollTop = 0;
+    const st = all[state.step];
+    announce(`${t(st.t, st.e)}. Step ${state.step+1} of ${all.length}.`);
+  }
+}
+function prevStep(){
+  if(state.screen === 'journey' && state.step > 0){ state.step--; render(); $('screen').scrollTop = 0; }
+  else if(state.screen === 'journey'){ go('grow'); }
+  else if(['process'].includes(state.screen)) go('know');
+  else if(['scheme'].includes(state.screen)) go('benefits');
+  else go('home');
+}
+
+document.addEventListener('click', e => {
+  const profBtn = e.target.closest('[data-p]');
+  if(profBtn){ setProfile(profBtn.dataset.p); return; }
+
+  const demoBtn = e.target.closest('[data-d]');
+  if(demoBtn){
+    const d = DEMOS[+demoBtn.dataset.d];
+    state.prevProfile = state.profile; state.profile = d.p;
+    state.sheet = null; state.agent = null;
+    d.go(); render(); $('screen').scrollTop = 0;
+    toast('Demo ' + d.n + ' loaded');
+    return;
+  }
+
+  const btn = e.target.closest('[data-a]');
+  if(!btn) return;
+  const a = btn.dataset.a, v = btn.dataset.v;
+
+  switch(a){
+    case 'tab': go(v === 'home' ? 'home' : v); break;
+    case 'back': prevStep(); break;
+    case 'next': nextStep(); break;
+    case 'pick-next': nextStep(); break;
+    case 'pick-kyc': announce(v + ' selected.'); toast(v + ' selected'); break;
+    case 'mute': state.muted = !state.muted; if(state.muted) try{window.speechSynthesis.cancel();}catch(_){} renderAssistBar(); break;
+    case 'say': announce(v); break;
+    case 'play-isl': toast('ISL explainer playing'); announce('ISL explainer: ' + v); break;
+    case 'process': go('process', {processId:v}); break;
+    case 'scheme': go('scheme', {schemeId:v}); break;
+    case 'start-process': toast('Process started'); go('home'); break;
+    case 'apply-scheme': toast('Opening official portal (demo)'); break;
+    case 'journey-edu': go('journey', {journey:'edu', step:0}); break;
+    case 'journey-msme': go('journey', {journey:'msme', step:0}); break;
+    case 'xfer': go('journey', {journey:'xfer', step:0}); break;
+    case 'saathi': state.sheet = 'saathi'; render(); break;
+    case 'close-sheet': if(e.target.closest('[data-stop]') && !btn.matches('[data-a="close-sheet"]')) return; state.sheet = null; render(); break;
+    case 'connect':
+      state.agent = {profile:state.profile, channel:v, ctx:currentContext()};
+      state.sheet = null; render();
+      toast(CHANNELS[v].label + ' connected');
+      announce('Connected to your SAATHI by ' + CHANNELS[v].label + '. They can see which step you are on.');
+      break;
+    case 'end-agent': state.agent = null; renderAgent(); toast('SAATHI session ended'); break;
+    case 'quick-balance': state.sheet = 'balance'; render(); break;
+    case 'quick-fd': state.sheet = 'fd'; render(); break;
+    case 'quick-block': state.sheet = 'block'; render(); break;
+    case 'quick-kyc': state.sheet = 'kyc'; render(); break;
+    case 'quick-nom': state.sheet = 'nom'; render(); break;
+    case 'quick-sip': state.sheet = 'sip'; render(); break;
+    case 'toggle-doc': state.done.docs[v] = !state.done.docs[v]; render(); announce(v + (state.done.docs[v] ? ' marked ready' : ' unmarked')); break;
+    case 'toggle-up': state.done.upload[v] = !state.done.upload[v]; render(); announce(v + ' uploaded and checked'); break;
+    case 'amt-up': if(state.journey==='edu') state.form.amount += 50000; else state.form.bizAmount += 50000; render(); break;
+    case 'amt-down':
+      if(state.journey==='edu') state.form.amount = Math.max(50000, state.form.amount - 50000);
+      else state.form.bizAmount = Math.max(50000, state.form.bizAmount - 50000);
+      render(); break;
+    case 'x-up': state.form.xferAmount += 500; render(); break;
+    case 'x-down': state.form.xferAmount = Math.max(500, state.form.xferAmount - 500); render(); break;
+    case 'x-set': state.form.xferAmount = +v; render(); break;
+    case 'ob-next': state.onboardStep++; render(); break;
+    case 'ob-pick':
+      state.onboardPicks = state.onboardPicks.includes(v) ? state.onboardPicks.filter(x=>x!==v) : state.onboardPicks.concat(v);
+      render(); break;
+    case 'ob-skip': go('home'); toast('Existing customer — preferences already on file'); break;
+    case 'ob-accept': state.prevProfile = state.profile; state.profile = 'blind'; go('home'); toast('Voice banking on — you can turn it off any time'); break;
+    case 'ob-decline': go('home'); toast('Nothing changed. Ask any time.'); break;
+  }
+});
+
+/* keyboard: left/right move through a journey */
+document.addEventListener('keydown', e => {
+  if(state.screen !== 'journey') return;
+  if(e.target.matches('input, select, textarea')) return;
+  if(e.key === 'ArrowRight') nextStep();
+  if(e.key === 'ArrowLeft') prevStep();
+});
+
+renderDemos();
+renderVerdict();
+render();
+</script>
+
+</body>
+</html>
